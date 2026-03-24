@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@600;700&family=Space+Mono&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 262 83% 5%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 252 20% 96%;
+    --secondary-foreground: 262 83% 58%;
+    --muted: 252 20% 96%;
+    --muted-foreground: 252 5% 45%;
+    --border: 252 20% 90%;
+    --input: 252 20% 90%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 262 83% 2%;
+    --foreground: 0 0% 100%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 262 83% 10%;
+    --secondary-foreground: 262 83% 58%;
+    --muted: 262 83% 10%;
+    --muted-foreground: 262 10% 70%;
+    --border: 262 83% 15%;
+  }
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+.glass {
+  @apply bg-white/80 backdrop-blur-md border border-white/20;
+}
