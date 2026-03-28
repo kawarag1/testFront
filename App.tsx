@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './src/pages/Home.tsx';
 import Commands from './src/pages/Commands.tsx';
 import Dashboard from './src/pages/Dashboard.tsx';
+import Callback from './src/pages/Callback.tsx';
 import NotFound from './src/pages/NotFound.tsx';
 import { I18nProvider } from './src/i18n.tsx';
 
@@ -21,6 +22,7 @@ const App: React.FC = () => {
               <Route path="/" element={<Home />} />
               <Route path="/commands" element={<Commands />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/callback" element={<Callback />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ToastContainer

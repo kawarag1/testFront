@@ -16,6 +16,16 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleDiscordLogin = () => {
+    const clientId = '1403029892387569766';
+    const redirectUri = encodeURIComponent('http://212.20.53.169:5173/callback');
+    const scope = 'identify+guilds';
+    
+    const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    
+    window.location.href = discordAuthUrl;
+  };
+
   const navLinks = [
     { name: t.nav.home, path: '/', icon: HomeIcon },
     { name: t.nav.commands, path: '/commands', icon: BookOpen },
@@ -50,13 +60,11 @@ const Navbar = () => {
           >
             {language === 'en' ? 'RU' : 'EN'}
           </button>
-          <a
-            href="https://discord.com/oauth2/authorize?client_id=1403029892387569766"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all shadow-lg shadow-primary/20 inline-block text-center no-underline cursor-pointer">
+          <button
+            onClick={handleDiscordLogin}
+            className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all shadow-lg shadow-primary/20 cursor-pointer border-0">
             {t.nav.addToDiscord}
-          </a>
+          </button>
         </div>
 
         {/* Mobile Toggle */}
