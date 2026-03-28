@@ -9,8 +9,12 @@ const Callback: React.FC = () => {
 
   useEffect(() => {
     const handleCallback = async () => {
+      console.log('Callback: window.location.href=', window.location.href);
+      console.log('Callback: window.location.search=', window.location.search);
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code');
+
+      console.log('Callback: code=', code);
 
       if (!code) {
         setError('Код авторизации не найден');
@@ -59,7 +63,8 @@ const Callback: React.FC = () => {
         setTimeout(() => navigate('/dashboard'), 1500);
       } catch (err) {
         console.error('Авторизация: исключение в handleCallback', err);
-        setError(err instanceof Error ? err.message : 'Произошла ошибка при авторизации');
+        const message = err instanceof Error ? err.message : 'Произошла ошибка при авторизации';
+        setError(`Ошибка авторизации: ${message}`);
         setLoading(false);
       }
     };
