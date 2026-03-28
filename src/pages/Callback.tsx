@@ -29,12 +29,22 @@ const Callback: React.FC = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Ошибка авторизации');
+          const text = await response.text();
+          console.error('Авторизация: API ответил не ok', {
+            status: response.status,
+            statusText: response.statusText,
+            body: text,
+          });
+          throw new Error(`Ошибка авторизации: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
 
-        console.log('User data:', data);
+        console.log('Авторизация: успешный ответ сервера', {
+          status: response.status,
+          statusText: response.statusText,
+          data,
+        });
 
         // Сохраняем токен и информацию о пользователе
         if (data.user) {
@@ -48,6 +58,7 @@ const Callback: React.FC = () => {
         // Перенаправляем на главную страницу
         setTimeout(() => navigate('/dashboard'), 1500);
       } catch (err) {
+        console.error('Авторизация: исключение в handleCallback', err);
         setError(err instanceof Error ? err.message : 'Произошла ошибка при авторизации');
         setLoading(false);
       }
