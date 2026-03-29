@@ -23,11 +23,13 @@ const Callback: React.FC = () => {
       }
 
       try {
+        console.log('Sending code:', code);
         // Отправляем код на ваш бэкенд
-        const response = await fetch('http://ds_bot_api:8000/v1/auth/get_owner', {
+        const response = await fetch('http://185.92.72.38:8000/v1/auth/get_owner', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
           body: JSON.stringify({ code })
         });
