@@ -24,7 +24,7 @@ const Callback: React.FC = () => {
 
       try {
         // Отправляем код на ваш бэкенд
-        const response = await fetch('http://localhost:8002/v1/auth/get_owner', {
+        const response = await fetch('http://localhost:8000/v1/auth/get_owner', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
