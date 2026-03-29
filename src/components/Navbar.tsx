@@ -18,7 +18,7 @@ const Navbar = () => {
 
   const handleDiscordLogin = () => {
     const clientId = '1403029892387569766';
-    const redirectUri = encodeURIComponent('http://185.92.72.38:5173//callback');
+    const redirectUri = encodeURIComponent('http://185.92.72.38:5173/callback');
     const scope = 'identify+guilds';
     
     const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
