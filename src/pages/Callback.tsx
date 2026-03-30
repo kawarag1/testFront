@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from 'lucide-react';
 
@@ -6,8 +6,18 @@ const Callback: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasExecuted = useRef(false); // Создаем ref для отслеживания выполнения
 
   useEffect(() => {
+    // Проверяем, был ли уже выполнен запрос
+    if (hasExecuted.current) {
+      console.log('Callback: запрос уже был выполнен, пропускаем');
+      return;
+    }
+    
+    // Помечаем, что запрос будет выполнен
+    hasExecuted.current = true;
+
     const handleCallback = async () => {
       console.log('Callback: window.location.href=', window.location.href);
       console.log('Callback: window.location.search=', window.location.search);
@@ -72,7 +82,7 @@ const Callback: React.FC = () => {
     };
 
     handleCallback();
-  }, [navigate]);
+  }, [navigate]); // Зависимости остаются теми же
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-background/50">
