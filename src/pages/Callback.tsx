@@ -1,23 +1,62 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from 'lucide-react';
+
+type CallbackResponse = {
+  user?: unknown;
+  token?: string;
+};
+
+const callbackRequests = new Map<string, Promise<CallbackResponse>>();
+
+function exchangeCallbackCode(code: string): Promise<CallbackResponse> {
+  const existingRequest = callbackRequests.get(code);
+  if (existingRequest) {
+    return existingRequest;
+  }
+
+  const request = fetch('http://185.92.72.38:8000/v1/auth/get_owner', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const text = await response.text();
+        console.error('Авторизация: API ответил не ok', {
+          status: response.status,
+          statusText: response.statusText,
+          body: text,
+        });
+        throw new Error(`Ошибка авторизации: ${response.status} ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as CallbackResponse;
+      console.log('Авторизация: успешный ответ сервера', {
+        status: response.status,
+        statusText: response.statusText,
+        data,
+      });
+
+      return data;
+    })
+    .finally(() => {
+      callbackRequests.delete(code);
+    });
+
+  callbackRequests.set(code, request);
+  return request;
+}
 
 const Callback: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const hasExecuted = useRef(false); // Создаем ref для отслеживания выполнения
 
   useEffect(() => {
-    // Проверяем, был ли уже выполнен запрос
-    if (hasExecuted.current) {
-      console.log('Callback: запрос уже был выполнен, пропускаем');
-      return;
-    }
-    
-    // Помечаем, что запрос будет выполнен
-    hasExecuted.current = true;
-
     const handleCallback = async () => {
       console.log('Callback: window.location.href=', window.location.href);
       console.log('Callback: window.location.search=', window.location.search);
@@ -34,35 +73,12 @@ const Callback: React.FC = () => {
 
       try {
         console.log('Sending code:', code);
-        // Отправляем код на ваш бэкенд
-        const response = await fetch('http://185.92.72.38:8000/v1/auth/get_owner', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({ code })
-        });
+        const data = await exchangeCallbackCode(code);
 
-        if (!response.ok) {
-          const text = await response.text();
-          console.error('Авторизация: API ответил не ok', {
-            status: response.status,
-            statusText: response.statusText,
-            body: text,
-          });
-          throw new Error(`Ошибка авторизации: ${response.status} ${response.statusText}`);
+        if (!data) {
+          throw new Error('Пустой ответ от сервера авторизации');
         }
 
-        const data = await response.json();
-
-        console.log('Авторизация: успешный ответ сервера', {
-          status: response.status,
-          statusText: response.statusText,
-          data,
-        });
-
-        // Сохраняем токен и информацию о пользователе
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
@@ -71,8 +87,7 @@ const Callback: React.FC = () => {
           localStorage.setItem('token', data.token);
         }
 
-        // Перенаправляем на главную страницу
-        setTimeout(() => navigate('/dashboard'), 1500);
+        setTimeout(() => navigate('/dashboard', { replace: true }), 1500);
       } catch (err) {
         console.error('Авторизация: исключение в handleCallback', err);
         const message = err instanceof Error ? err.message : 'Произошла ошибка при авторизации';
@@ -82,7 +97,7 @@ const Callback: React.FC = () => {
     };
 
     handleCallback();
-  }, [navigate]); // Зависимости остаются теми же
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-background/50">
