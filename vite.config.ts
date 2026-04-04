@@ -3,6 +3,18 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    host: true,  // Разрешить доступ с любых сетевых интерфейсов
+    port: 5173,   // Явно указываем порт
+    strictPort: true, // Не использовать другой порт, если 5173 занят
+    allowedHosts: [
+      'helper.nelocal.host',
+      'localhost',
+      '127.0.0.1',
+      '.nelocal.host',  // Разрешить все поддомены .nelocal.host
+      // Добавьте сюда другие домены, если нужно
+    ],
+  },
   esbuild: {
     logOverride: {
       'ignored-directive': 'silent', 
