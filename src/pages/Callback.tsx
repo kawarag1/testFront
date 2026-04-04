@@ -15,7 +15,7 @@ function exchangeCallbackCode(code: string): Promise<CallbackResponse> {
     return existingRequest;
   }
 
-  const request = fetch('http://185.92.72.38:8000/v1/auth/get_owner', {
+  const request = fetch('http://helper.nelocal.host/api/v1/auth/get_owner', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
