@@ -129,12 +129,12 @@ const NotFound: React.FC = () => {
         {/* Footer */}
         <div className="mt-16">
           <p className="text-sm text-gray-600">
-            © {new Date().getFullYear()} - Meku.dev
+            © {new Date().getFullYear()} Helper Bot
           </p>
         </div>
       </div>
 
-      <div className="absolute inset-0 bg-[url(https://meku.dev/images/grain.png)] bg-cover bg-center opacity-60 mix-blend-soft-light z-20"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-white/5 z-20"></div>
 
       <div className="absolute bottom-0 left-0 right-0 z-10">
         <svg
