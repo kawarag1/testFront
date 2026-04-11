@@ -1,12 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bot, Menu, X, ChevronRight, LayoutDashboard, BookOpen, Home as HomeIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '../i18n';
 
+type DiscordUser = {
+  username?: string;
+  global_name?: string;
+  display_name?: string;
+};
+
+const hasSessionToken = (): boolean => {
+  return document.cookie
+    .split(';')
+    .some((cookie) => cookie.trim().startsWith('session_token='));
+};
+
+const getUserName = (): string | null => {
+  const rawUser = window.localStorage.getItem('user');
+  if (!rawUser) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(rawUser) as DiscordUser;
+    return parsed.global_name || parsed.display_name || parsed.username || null;
+  } catch {
+    return null;
+  }
+};
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+  const navigate = useNavigate();
   const location = useLocation();
   const { language, setLanguage, t } = useI18n();
 
@@ -15,6 +44,11 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    setIsAuthorized(hasSessionToken());
+    setUserName(getUserName());
+  }, [location.pathname]);
 
   const handleDiscordLogin = () => {
     const clientId = '1403029892387569766';
@@ -26,10 +60,20 @@ const Navbar = () => {
     window.location.href = discordAuthUrl;
   };
 
+  const handleAuthButtonClick = () => {
+    if (isAuthorized) {
+      navigate('/guilds');
+      setIsOpen(false);
+      return;
+    }
+
+    handleDiscordLogin();
+  };
+
   const navLinks = [
     { name: t.nav.home, path: '/', icon: HomeIcon },
     { name: t.nav.commands, path: '/commands', icon: BookOpen },
-    { name: t.nav.dashboard, path: '/dashboard', icon: LayoutDashboard },
+    { name: t.nav.dashboard, path: '/guilds', icon: LayoutDashboard },
   ];
 
   return (
@@ -61,9 +105,9 @@ const Navbar = () => {
             {language === 'en' ? 'RU' : 'EN'}
           </button>
           <button
-            onClick={handleDiscordLogin}
+            onClick={handleAuthButtonClick}
             className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all shadow-lg shadow-primary/20 cursor-pointer border-0">
-            {t.nav.addToDiscord}
+            {isAuthorized ? (userName || t.nav.myServers) : t.nav.authorize}
           </button>
         </div>
 
@@ -106,8 +150,11 @@ const Navbar = () => {
                   <ChevronRight size={16} className="text-muted-foreground" />
                 </Link>
               ))}
-              <button className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold mt-2">
-                {t.nav.addToDiscord}
+              <button
+                onClick={handleAuthButtonClick}
+                className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold mt-2"
+              >
+                {isAuthorized ? (userName || t.nav.myServers) : t.nav.authorize}
               </button>
             </div>
           </motion.div>
