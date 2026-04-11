@@ -81,12 +81,6 @@ const Callback: React.FC = () => {
           throw new Error('Пустой ответ от сервера авторизации');
         }
 
-        const user = data.user ?? data.owner;
-
-        if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-        }
-
         setTimeout(() => navigate('/guilds', { replace: true }), 1500);
       } catch (err) {
         console.error('Авторизация: исключение в handleCallback', err);

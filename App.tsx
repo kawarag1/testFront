@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
 import { ToastContainer } from 'react-toastify';
@@ -12,10 +12,20 @@ import Callback from './src/pages/Callback.tsx';
 import Guilds from './src/pages/Guilds';
 import NotFound from './src/pages/NotFound.tsx';
 import { I18nProvider } from './src/i18n.tsx';
-import { isAuthorizedClient } from './src/utils/auth';
+import { getSessionUser } from './src/utils/auth.ts';
 
 const ProtectedDashboardRoute: React.FC = () => {
-  if (!isAuthorizedClient()) {
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    void getSessionUser().then((user) => setIsAuthorized(Boolean(user)));
+  }, []);
+
+  if (isAuthorized === null) {
+    return <div className="min-h-screen bg-background" />;
+  }
+
+  if (!isAuthorized) {
     return <Navigate to="/" replace />;
   }
 
@@ -23,7 +33,17 @@ const ProtectedDashboardRoute: React.FC = () => {
 };
 
 const ProtectedGuildsRoute: React.FC = () => {
-  if (!isAuthorizedClient()) {
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    void getSessionUser().then((user) => setIsAuthorized(Boolean(user)));
+  }, []);
+
+  if (isAuthorized === null) {
+    return <div className="min-h-screen bg-background" />;
+  }
+
+  if (!isAuthorized) {
     return <Navigate to="/" replace />;
   }
 

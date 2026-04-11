@@ -4,33 +4,14 @@ import { Bot, Menu, X, ChevronRight, LayoutDashboard, BookOpen, Home as HomeIcon
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
-import { isAuthorizedClient } from '../utils/auth';
-
-type DiscordUser = {
-  username?: string;
-  global_name?: string;
-  display_name?: string;
-};
-
-const getUserName = (): string | null => {
-  const rawUser = window.localStorage.getItem('user');
-  if (!rawUser) {
-    return null;
-  }
-
-  try {
-    const parsed = JSON.parse(rawUser) as DiscordUser;
-    return parsed.global_name || parsed.display_name || parsed.username || null;
-  } catch {
-    return null;
-  }
-};
+import { getSessionUser } from '../utils/auth.ts';
+import type { SessionUser } from '../utils/auth.ts';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
+  const [sessionUser, setSessionUser] = useState<SessionUser | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { language, setLanguage, t } = useI18n();
@@ -42,8 +23,20 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    setIsAuthorized(isAuthorizedClient());
-    setUserName(getUserName());
+    let isMounted = true;
+
+    void getSessionUser().then((user) => {
+      if (!isMounted) {
+        return;
+      }
+
+      setSessionUser(user);
+      setIsAuthorized(Boolean(user));
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, [location.pathname]);
 
   const handleDiscordLogin = () => {
@@ -123,7 +116,7 @@ const Navbar = () => {
           <button
             onClick={handleAuthButtonClick}
             className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all shadow-lg shadow-primary/20 cursor-pointer border-0">
-            {isAuthorized ? (userName || t.nav.myServers) : t.nav.authorize}
+            {isAuthorized ? (sessionUser?.global_name || sessionUser?.display_name || sessionUser?.username || t.nav.myServers) : t.nav.authorize}
           </button>
         </div>
 
@@ -177,7 +170,7 @@ const Navbar = () => {
                 onClick={handleAuthButtonClick}
                 className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold mt-2"
               >
-                {isAuthorized ? (userName || t.nav.myServers) : t.nav.authorize}
+                {isAuthorized ? (sessionUser?.global_name || sessionUser?.display_name || sessionUser?.username || t.nav.myServers) : t.nav.authorize}
               </button>
             </div>
           </motion.div>
