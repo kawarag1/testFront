@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from 'lucide-react';
+import { apiUrl } from '../config/api';
 
 type CallbackResponse = {
   user?: unknown;
@@ -15,7 +16,7 @@ function exchangeCallbackCode(code: string): Promise<CallbackResponse> {
     return existingRequest;
   }
 
-  const request = fetch('http://helper.nelocal.host/api/v1/auth/get_owner', {
+  const request = fetch(apiUrl('/api/v1/auth/get_owner'), {
     method: 'POST',
     credentials: 'include',
     headers: {

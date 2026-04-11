@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Building2, Loader2, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { apiUrl } from '../config/api';
 
 type Guild = {
   id: string;
@@ -60,7 +61,7 @@ const Guilds: React.FC = () => {
       const token = localStorage.getItem('token');
 
       try {
-        const response = await fetch('http://helper.nelocal.host/api/v1/guilds/guilds', {
+        const response = await fetch(apiUrl('/api/v1/guilds/guilds'), {
           method: 'GET',
           credentials: 'include',
           headers: {

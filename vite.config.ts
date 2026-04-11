@@ -7,6 +7,12 @@ export default defineConfig({
     host: true,  // Разрешить доступ с любых сетевых интерфейсов
     port: 5173,   // Явно указываем порт
     strictPort: true, // Не использовать другой порт, если 5173 занят
+    proxy: {
+      '/api': {
+        target: 'http://helper.nelocal.host',
+        changeOrigin: true,
+      },
+    },
     allowedHosts: [
       'helper.nelocal.host',
       'localhost',
