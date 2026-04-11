@@ -1,4 +1,4 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) || '';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined) || 'http://helper.nelocal.host';
 
 export function apiUrl(path: string): string {
   if (!path.startsWith('/')) {
