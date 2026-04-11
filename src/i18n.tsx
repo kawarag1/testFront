@@ -8,6 +8,8 @@ type Dictionary = {
     commands: string;
     dashboard: string;
     addToDiscord: string;
+    authorize: string;
+    myServers: string;
   };
   home: {
     trustedBy: string;
@@ -101,6 +103,8 @@ const dictionaries: Record<Language, Dictionary> = {
       commands: 'Commands',
       dashboard: 'Dashboard',
       addToDiscord: 'Add to Discord',
+      authorize: 'Authorize',
+      myServers: 'My Servers',
     },
     home: {
       trustedBy: 'Trusted by 50,000+ Servers',
@@ -192,6 +196,8 @@ const dictionaries: Record<Language, Dictionary> = {
       commands: 'Команды',
       dashboard: 'Панель',
       addToDiscord: 'Добавить в Discord',
+      authorize: 'Авторизоваться',
+      myServers: 'Мои серверы',
     },
     home: {
       trustedBy: 'Нам доверяют 50 000+ серверов',
