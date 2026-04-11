@@ -10,10 +10,14 @@ type DiscordUser = {
   display_name?: string;
 };
 
-const hasSessionToken = (): boolean => {
-  return document.cookie
+const hasAuthSession = (): boolean => {
+  const hasSessionToken = document.cookie
     .split(';')
     .some((cookie) => cookie.trim().startsWith('session_token='));
+
+  const hasAccessToken = Boolean(window.localStorage.getItem('token'));
+
+  return hasSessionToken || hasAccessToken;
 };
 
 const getUserName = (): string | null => {
@@ -46,13 +50,13 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    setIsAuthorized(hasSessionToken());
+    setIsAuthorized(hasAuthSession());
     setUserName(getUserName());
   }, [location.pathname]);
 
   const handleDiscordLogin = () => {
     const clientId = '1403029892387569766';
-    const redirectUri = encodeURIComponent('http://helper.nelocal.host/callback');
+    const redirectUri = encodeURIComponent(`${window.location.origin}/callback`);
     const scope = 'identify+guilds';
     
     const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
