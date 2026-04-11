@@ -87,7 +87,7 @@ const Callback: React.FC = () => {
           localStorage.setItem('token', data.token);
         }
 
-        setTimeout(() => navigate('/dashboard', { replace: true }), 1500);
+        setTimeout(() => navigate('/guilds', { replace: true }), 1500);
       } catch (err) {
         console.error('Авторизация: исключение в handleCallback', err);
         const message = err instanceof Error ? err.message : 'Произошла ошибка при авторизации';
