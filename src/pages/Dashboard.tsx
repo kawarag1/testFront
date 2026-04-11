@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Shield, 
@@ -16,14 +17,52 @@ import {
 import Navbar from '../components/Navbar';
 import { useI18n } from '../i18n';
 
+type Guild = {
+  id: string;
+  name: string;
+  icon?: string | null;
+  owner?: boolean;
+  members?: number;
+};
+
+type DashboardLocationState = {
+  guild?: Guild;
+};
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('general');
+  const { guildId } = useParams();
+  const location = useLocation();
   const { t } = useI18n();
 
+  const locationState = location.state as DashboardLocationState | null;
+
+  let selectedGuild: Guild | null = locationState?.guild ?? null;
+
+  if (!selectedGuild) {
+    const storedGuild = window.localStorage.getItem('selectedGuild');
+    if (storedGuild) {
+      try {
+        const parsed = JSON.parse(storedGuild) as Guild;
+        if (!guildId || parsed.id === guildId) {
+          selectedGuild = parsed;
+        }
+      } catch {
+        selectedGuild = null;
+      }
+    }
+  }
+
+  const activeGuildName = selectedGuild?.name || guildId || 'Unknown Guild';
+
   const servers = [
-    { id: 1, name: 'Helper Community', icon: 'HC', members: '12.4k', active: true },
-    { id: 2, name: 'Dev Hub', icon: 'DH', members: '1.2k', active: false },
-    { id: 3, name: 'Gaming Zone', icon: 'GZ', members: '450', active: false },
+    {
+      id: selectedGuild?.id || guildId || 'selected',
+      name: activeGuildName,
+      icon: activeGuildName.slice(0, 2).toUpperCase(),
+      members: selectedGuild?.members ? String(selectedGuild.members) : '—',
+      active: true,
+    },
   ];
 
   const menuItems = [
@@ -67,6 +106,13 @@ const Dashboard = () => {
                   </div>
                 </button>
               ))}
+              <Link
+                to="/guilds"
+                className="w-full flex items-center justify-between gap-3 p-3 rounded-xl mt-3 text-sm font-medium bg-secondary/50 hover:bg-secondary transition-all"
+              >
+                Выбрать другой сервер
+                <ChevronRight size={16} />
+              </Link>
             </div>
 
             <div className="space-y-1">
@@ -97,7 +143,7 @@ const Dashboard = () => {
           <div className="max-w-4xl mx-auto">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
               <div>
-                <h1 className="text-3xl font-bold font-serif mb-2">{t.dashboard.generalSettings}</h1>
+                <h1 className="text-3xl font-bold font-serif mb-2">{t.dashboard.generalSettings}: {activeGuildName}</h1>
                 <p className="text-muted-foreground">{t.dashboard.configureBasic}</p>
               </div>
               <div className="flex gap-3">
