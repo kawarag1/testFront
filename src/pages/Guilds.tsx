@@ -62,6 +62,7 @@ const Guilds: React.FC = () => {
       try {
         const response = await fetch('http://helper.nelocal.host/api/v1/guilds/guilds', {
           method: 'GET',
+          credentials: 'include',
           headers: {
             Accept: 'application/json',
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
