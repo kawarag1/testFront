@@ -87,3 +87,17 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 export async function isAuthorizedClient(): Promise<boolean> {
   return (await getSessionUser()) !== null;
 }
+
+export async function logoutSession(): Promise<void> {
+  await fetch(apiUrl('/api/v1/auth/logout'), {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).catch(() => {
+    // Ignore network errors here; the caller will handle UI state.
+  });
+
+  clearCachedSessionUser();
+}

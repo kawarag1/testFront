@@ -4,7 +4,7 @@ import { Bot, Menu, X, ChevronRight, LayoutDashboard, BookOpen, Home as HomeIcon
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
-import { getSessionUser } from '../utils/auth.ts';
+import { getSessionUser, logoutSession } from '../utils/auth.ts';
 import type { SessionUser } from '../utils/auth.ts';
 
 const Navbar = () => {
@@ -57,6 +57,19 @@ const Navbar = () => {
     }
 
     handleDiscordLogin();
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      await logoutSession();
+      setSessionUser(null);
+      setIsAuthorized(false);
+      setIsOpen(false);
+      navigate('/', { replace: true });
+      toast.success(language === 'ru' ? 'Вы вышли из профиля' : 'You have been signed out');
+    } catch {
+      toast.error(language === 'ru' ? 'Не удалось выйти из профиля' : 'Failed to sign out');
+    }
   };
 
   const handleDashboardClick = (
@@ -118,6 +131,14 @@ const Navbar = () => {
             className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all shadow-lg shadow-primary/20 cursor-pointer border-0">
             {isAuthorized ? (sessionUser?.global_name || sessionUser?.display_name || sessionUser?.username || t.nav.myServers) : t.nav.authorize}
           </button>
+          {isAuthorized && (
+            <button
+              onClick={handleLogoutClick}
+              className="bg-secondary border border-border text-foreground px-4 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all"
+            >
+              {language === 'ru' ? 'Выйти' : 'Logout'}
+            </button>
+          )}
         </div>
 
         {/* Mobile Toggle */}
@@ -172,6 +193,14 @@ const Navbar = () => {
               >
                 {isAuthorized ? (sessionUser?.global_name || sessionUser?.display_name || sessionUser?.username || t.nav.myServers) : t.nav.authorize}
               </button>
+              {isAuthorized && (
+                <button
+                  onClick={handleLogoutClick}
+                  className="w-full bg-secondary border border-border text-foreground py-4 rounded-xl font-bold"
+                >
+                  {language === 'ru' ? 'Выйти' : 'Logout'}
+                </button>
+              )}
             </div>
           </motion.div>
         )}

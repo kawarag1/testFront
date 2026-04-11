@@ -17,6 +17,8 @@ type GuildsApiResponse = {
   data?: Guild[];
 };
 
+let guildsRequestPromise: Promise<Guild[]> | null = null;
+
 function toGuildArray(payload: unknown): Guild[] {
   if (Array.isArray(payload)) {
     return payload as Guild[];
@@ -45,6 +47,37 @@ function guildIconUrl(guild: Guild): string | null {
   return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`;
 }
 
+async function loadGuildsOnce(): Promise<Guild[]> {
+  if (guildsRequestPromise) {
+    return guildsRequestPromise;
+  }
+
+  guildsRequestPromise = fetch(apiUrl('/api/v1/guilds/guilds'), {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error('Слишком много запросов к API гильдий. Подождите несколько секунд и попробуйте снова.');
+        }
+
+        throw new Error(`Не удалось загрузить гильдии: ${response.status} ${response.statusText}`);
+      }
+
+      const payload = (await response.json()) as unknown;
+      return toGuildArray(payload);
+    })
+    .finally(() => {
+      guildsRequestPromise = null;
+    });
+
+  return guildsRequestPromise;
+}
+
 const Guilds: React.FC = () => {
   const navigate = useNavigate();
   const [guilds, setGuilds] = useState<Guild[]>([]);
@@ -59,21 +92,7 @@ const Guilds: React.FC = () => {
   useEffect(() => {
     const loadGuilds = async () => {
       try {
-        const response = await fetch(apiUrl('/api/v1/guilds/guilds'), {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            Accept: 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Не удалось загрузить гильдии: ${response.status} ${response.statusText}`);
-        }
-
-        const payload = (await response.json()) as unknown;
-        const parsedGuilds = toGuildArray(payload);
-
+        const parsedGuilds = await loadGuildsOnce();
         setGuilds(parsedGuilds);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Ошибка загрузки гильдий';
