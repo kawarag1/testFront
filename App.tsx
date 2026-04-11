@@ -3,14 +3,37 @@ import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-dom';
 
 import Home from './src/pages/Home.tsx';
 import Commands from './src/pages/Commands.tsx';
 import Dashboard from './src/pages/Dashboard.tsx';
 import Callback from './src/pages/Callback.tsx';
+import Guilds from './src/pages/Guilds';
 import NotFound from './src/pages/NotFound.tsx';
 import { I18nProvider } from './src/i18n.tsx';
+
+const hasSessionToken = (): boolean => {
+  return document.cookie
+    .split(';')
+    .some((cookie) => cookie.trim().startsWith('session_token='));
+};
+
+const ProtectedDashboardRoute: React.FC = () => {
+  if (!hasSessionToken()) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Dashboard />;
+};
+
+const ProtectedGuildsRoute: React.FC = () => {
+  if (!hasSessionToken()) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Guilds />;
+};
 
 const App: React.FC = () => {
   return (
@@ -21,8 +44,10 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/commands" element={<Commands />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Navigate to="/guilds" replace />} />
+              <Route path="/dashboard/:guildId" element={<ProtectedDashboardRoute />} />
               <Route path="/callback" element={<Callback />} />
+              <Route path="/guilds" element={<ProtectedGuildsRoute />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ToastContainer
