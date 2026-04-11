@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bot, Menu, X, ChevronRight, LayoutDashboard, BookOpen, Home as HomeIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
 
 type DiscordUser = {
@@ -74,6 +75,21 @@ const Navbar = () => {
     handleDiscordLogin();
   };
 
+  const handleDashboardClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    closeMobileMenu = false,
+  ) => {
+    if (!isAuthorized) {
+      event.preventDefault();
+      toast.error(language === 'ru' ? 'Вы не авторизованы' : 'You are not authorized');
+      return;
+    }
+
+    if (closeMobileMenu) {
+      setIsOpen(false);
+    }
+  };
+
   const navLinks = [
     { name: t.nav.home, path: '/', icon: HomeIcon },
     { name: t.nav.commands, path: '/commands', icon: BookOpen },
@@ -96,6 +112,11 @@ const Navbar = () => {
             <Link
               key={link.path}
               to={link.path}
+              onClick={(event) => {
+                if (link.icon === LayoutDashboard) {
+                  handleDashboardClick(event);
+                }
+              }}
               className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.path ? 'text-primary' : 'text-muted-foreground'}`}
             >
               {link.name}
@@ -144,7 +165,14 @@ const Navbar = () => {
                 <Link
                   key={link.path}
                   to={link.path}
-                  onClick={() => setIsOpen(false)}
+                  onClick={(event) => {
+                    if (link.icon === LayoutDashboard) {
+                      handleDashboardClick(event, true);
+                      return;
+                    }
+
+                    setIsOpen(false);
+                  }}
                   className="flex items-center justify-between p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
                 >
                   <div className="flex items-center gap-3">
