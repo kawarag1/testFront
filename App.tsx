@@ -13,14 +13,18 @@ import Guilds from './src/pages/Guilds';
 import NotFound from './src/pages/NotFound.tsx';
 import { I18nProvider } from './src/i18n.tsx';
 
-const hasSessionToken = (): boolean => {
-  return document.cookie
+const isAuthorized = (): boolean => {
+  const hasSessionToken = document.cookie
     .split(';')
     .some((cookie) => cookie.trim().startsWith('session_token='));
+
+  const hasAccessToken = Boolean(window.localStorage.getItem('token'));
+
+  return hasSessionToken || hasAccessToken;
 };
 
 const ProtectedDashboardRoute: React.FC = () => {
-  if (!hasSessionToken()) {
+  if (!isAuthorized()) {
     return <Navigate to="/" replace />;
   }
 
@@ -28,7 +32,7 @@ const ProtectedDashboardRoute: React.FC = () => {
 };
 
 const ProtectedGuildsRoute: React.FC = () => {
-  if (!hasSessionToken()) {
+  if (!isAuthorized()) {
     return <Navigate to="/" replace />;
   }
 
