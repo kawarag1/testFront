@@ -58,15 +58,12 @@ const Guilds: React.FC = () => {
 
   useEffect(() => {
     const loadGuilds = async () => {
-      const token = localStorage.getItem('token');
-
       try {
         const response = await fetch(apiUrl('/api/v1/guilds/guilds'), {
           method: 'GET',
           credentials: 'include',
           headers: {
             Accept: 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
         });
 

@@ -4,21 +4,12 @@ import { Bot, Menu, X, ChevronRight, LayoutDashboard, BookOpen, Home as HomeIcon
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
+import { isAuthorizedClient } from '../utils/auth';
 
 type DiscordUser = {
   username?: string;
   global_name?: string;
   display_name?: string;
-};
-
-const hasAuthSession = (): boolean => {
-  const hasSessionToken = document.cookie
-    .split(';')
-    .some((cookie) => cookie.trim().startsWith('session_token='));
-
-  const hasAccessToken = Boolean(window.localStorage.getItem('token'));
-
-  return hasSessionToken || hasAccessToken;
 };
 
 const getUserName = (): string | null => {
@@ -51,7 +42,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    setIsAuthorized(hasAuthSession());
+    setIsAuthorized(isAuthorizedClient());
     setUserName(getUserName());
   }, [location.pathname]);
 

@@ -5,7 +5,7 @@ import { apiUrl } from '../config/api';
 
 type CallbackResponse = {
   user?: unknown;
-  token?: string;
+  owner?: unknown;
 };
 
 const callbackRequests = new Map<string, Promise<CallbackResponse>>();
@@ -81,12 +81,10 @@ const Callback: React.FC = () => {
           throw new Error('Пустой ответ от сервера авторизации');
         }
 
-        if (data.user) {
-          localStorage.setItem('user', JSON.stringify(data.user));
-        }
+        const user = data.user ?? data.owner;
 
-        if (data.token) {
-          localStorage.setItem('token', data.token);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
         }
 
         setTimeout(() => navigate('/guilds', { replace: true }), 1500);
