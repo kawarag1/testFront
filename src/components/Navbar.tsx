@@ -90,7 +90,6 @@ const Navbar = () => {
   const navLinks = [
     { name: t.nav.home, path: '/', icon: HomeIcon },
     { name: t.nav.commands, path: '/commands', icon: BookOpen },
-    { name: t.nav.dashboard, path: '/guilds', icon: LayoutDashboard },
   ];
 
   return (
