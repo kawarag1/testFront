@@ -17,6 +17,9 @@ const Commands = () => {
     { id: 'skip', name: '/skip', category: 'music', desc: t.commandsPage.skipDesc, usage: '/skip', permissions: t.commandsPage.none },
     { id: 'help', name: '/help', category: 'info', desc: t.commandsPage.helpDesc, usage: '/help [command]', permissions: t.commandsPage.none },
     { id: 'ping', name: '/ping', category: 'util', desc: t.commandsPage.pingDesc, usage: '/ping', permissions: t.commandsPage.none },
+    { id: 'about', name: '/about', category: 'info', desc: t.commandsPage.aboutDesc, usage: '/about', permissions: t.commandsPage.none },
+    { id: 'clear', name: '/clear', category: 'mod', desc: t.commandsPage.clearDesc, usage: '/clear [amount]', permissions: t.commandsPage.manageMessages },
+    { id: 'create_voice', name: '/create_voice', category: 'util', desc: t.commandsPage.createVoiceDesc, usage: '/create_voice [name] [user_limit (optional)]', permissions: t.commandsPage.none },
   ];
 
   const filteredCommands = commands.filter(c => 

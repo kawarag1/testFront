@@ -60,8 +60,12 @@ type Dictionary = {
     skipDesc: string;
     helpDesc: string;
     pingDesc: string;
+    aboutDesc: string;
+    clearDesc: string;
+    createVoiceDesc: string;
     banMembers: string;
     kickMembers: string;
+    manageMessages: string;
     none: string;
   };
   dashboard: {
@@ -153,10 +157,14 @@ const dictionaries: Record<Language, Dictionary> = {
       kickDesc: 'Kicks a user from the server.',
       playDesc: 'Plays a song from YouTube or Spotify.',
       skipDesc: 'Skips the current song.',
-      helpDesc: 'Shows the help menu.',
+      helpDesc: 'Shows all bot commands.',
       pingDesc: 'Checks the bot latency.',
+      aboutDesc: 'Shows information about the bot.',
+      clearDesc: 'Clears messages.',
+      createVoiceDesc: 'Creates a temporary voice chat.',
       banMembers: 'Ban Members',
       kickMembers: 'Kick Members',
+      manageMessages: 'Manage Messages',
       none: 'None',
     },
     dashboard: {
@@ -246,10 +254,14 @@ const dictionaries: Record<Language, Dictionary> = {
       kickDesc: 'Исключает пользователя с сервера.',
       playDesc: 'Воспроизводит трек из YouTube или Spotify.',
       skipDesc: 'Пропускает текущий трек.',
-      helpDesc: 'Показывает меню помощи.',
+      helpDesc: 'Показать все команды бота',
       pingDesc: 'Проверяет задержку бота.',
+      aboutDesc: 'Показывает информацию о боте.',
+      clearDesc: 'Очищает сообщения.',
+      createVoiceDesc: 'Создаёт временный голосовой чат.',
       banMembers: 'Бан участников',
       kickMembers: 'Кик участников',
+      manageMessages: 'Управление сообщениями',
       none: 'Не требуется',
     },
     dashboard: {
