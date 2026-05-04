@@ -21,7 +21,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
   const [togglingCommandId, setTogglingCommandId] = useState<string | null>(null);
   const { t } = useI18n();
 
-  // List of commands with their states (initially all enabled)
   const [commands, setCommands] = useState<Command[]>([
     { id: 'ban', name: '/ban', desc: t.commandsPage.banDesc, enabled: true },
     { id: 'kick', name: '/kick', desc: t.commandsPage.kickDesc, enabled: true },
@@ -53,13 +52,25 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          guild_id: parseInt(guildId, 10) || guildId,
-          command_name: command.name.replace('/', ''),
+          guild_id: String(guildId),
+          command_name: String(command.id),
         }),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to toggle command: ${response.status}`);
+        let backendMessage = '';
+        try {
+          const payload = await response.json();
+          backendMessage = typeof payload?.detail === 'string' ? payload.detail : JSON.stringify(payload);
+        } catch {
+          backendMessage = '';
+        }
+
+        throw new Error(
+          backendMessage
+            ? `Failed to toggle command: ${response.status} (${backendMessage})`
+            : `Failed to toggle command: ${response.status}`,
+        );
       }
 
       // Update local state
@@ -85,7 +96,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         <p className="text-muted-foreground">Включайте и выключайте команды бота для вашего сервера</p>
       </header>
 
-      {/* Search Bar */}
       <div className="relative mb-12">
         <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
         <input
@@ -97,7 +107,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         />
       </div>
 
-      {/* Commands List */}
       <div className="space-y-4">
         {filteredCommands.map((cmd) => (
           <div
@@ -114,7 +123,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
               </div>
             </div>
 
-            {/* Toggle Switch */}
             <button
               onClick={() => toggleCommand(cmd)}
               disabled={togglingCommandId === cmd.id}
