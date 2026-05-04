@@ -22,18 +22,18 @@ let guildsRequestPromise: Promise<Guild[]> | null = null;
 
 function toGuildArray(payload: unknown): Guild[] {
   if (Array.isArray(payload)) {
-    return (payload as Guild[]).map((g) => ({ ...g, id: String((g as any).id) }));
+    return payload as Guild[];
   }
 
   if (payload && typeof payload === 'object') {
     const objectPayload = payload as GuildsApiResponse;
 
     if (Array.isArray(objectPayload.guilds)) {
-      return objectPayload.guilds.map((g) => ({ ...g, id: String((g as any).id) }));
+      return objectPayload.guilds;
     }
 
     if (Array.isArray(objectPayload.data)) {
-      return objectPayload.data.map((g) => ({ ...g, id: String((g as any).id) }));
+      return objectPayload.data;
     }
   }
 
@@ -81,11 +81,7 @@ async function loadGuildsOnce(): Promise<Guild[]> {
 
 async function checkBotOnGuild(guildId: string): Promise<boolean> {
   try {
-    // Convert guildId to a numeric value for the backend API when possible
-    const numericId = Number(guildId);
-    const idForRequest = Number.isFinite(numericId) && !Number.isNaN(numericId) ? numericId : guildId;
-
-    const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${idForRequest}`), {
+    const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${guildId}`), {
       method: 'GET',
       credentials: 'include',
       headers: {
