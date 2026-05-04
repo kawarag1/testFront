@@ -12,9 +12,11 @@ import {
   ChevronRight,
   Search,
   LogOut,
-  Activity
+  Activity,
+  Terminal
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import CommandsManagement from './CommandsManagement.tsx';
 import { useI18n } from '../i18n';
 
 type Guild = {
@@ -71,6 +73,7 @@ const Dashboard = () => {
     { id: 'music', name: t.dashboard.menuMusic, icon: Music },
     { id: 'members', name: t.dashboard.menuMembers, icon: Users },
     { id: 'logs', name: t.dashboard.menuLogs, icon: Activity },
+    { id: 'commands', name: 'Commands', icon: Terminal },
   ];
 
   return (
@@ -78,7 +81,6 @@ const Dashboard = () => {
       <Navbar />
       
       <div className="flex-1 pt-20 flex">
-        {/* Sidebar */}
         <aside className="w-72 border-r border-border hidden lg:flex flex-col bg-secondary/10">
           <div className="p-6">
             <div className="relative mb-8">
@@ -138,85 +140,87 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        {/* Main Content */}
+        
         <main className="flex-1 p-6 md:p-12 overflow-y-auto">
-          <div className="max-w-4xl mx-auto">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-              <div>
-                <h1 className="text-3xl font-bold font-serif mb-2">{t.dashboard.generalSettings}: {activeGuildName}</h1>
-                <p className="text-muted-foreground">{t.dashboard.configureBasic}</p>
-              </div>
-              <div className="flex gap-3">
-                <button className="p-3 rounded-xl bg-secondary border border-border hover:bg-secondary/80 transition-all relative">
-                  <Bell size={20} />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
-                </button>
-                <button className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
-                  {t.dashboard.saveChanges}
-                </button>
-              </div>
-            </header>
+          {activeTab === 'general' && (
+            <div className="max-w-4xl mx-auto">
+              <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div>
+                  <h1 className="text-3xl font-bold font-serif mb-2">{t.dashboard.generalSettings}: {activeGuildName}</h1>
+                  <p className="text-muted-foreground">{t.dashboard.configureBasic}</p>
+                </div>
+                <div className="flex gap-3">
+                  <button className="p-3 rounded-xl bg-secondary border border-border hover:bg-secondary/80 transition-all relative">
+                    <Bell size={20} />
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
+                  </button>
+                  <button className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
+                    {t.dashboard.saveChanges}
+                  </button>
+                </div>
+              </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Setting Card 1 */}
-              <div className="p-8 rounded-3xl bg-card border border-border shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <MessageSquare size={20} className="text-primary" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-8 rounded-3xl bg-card border border-border shadow-sm">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <MessageSquare size={20} className="text-primary" />
+                      </div>
+                      <h3 className="font-bold">{t.dashboard.prefix}</h3>
                     </div>
-                    <h3 className="font-bold">{t.dashboard.prefix}</h3>
+                    <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">{t.dashboard.global}</span>
                   </div>
-                  <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">{t.dashboard.global}</span>
+                  <p className="text-sm text-muted-foreground mb-6">{t.dashboard.prefixDescription}</p>
+                  <input
+                    type="text"
+                    defaultValue="!"
+                    className="w-full bg-secondary/50 border border-border rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/50 outline-none"
+                  />
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">{t.dashboard.prefixDescription}</p>
-                <input
-                  type="text"
-                  defaultValue="!"
-                  className="w-full bg-secondary/50 border border-border rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/50 outline-none"
-                />
-              </div>
 
-              {/* Setting Card 2 */}
-              <div className="p-8 rounded-3xl bg-card border border-border shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Shield size={20} className="text-primary" />
+                <div className="p-8 rounded-3xl bg-card border border-border shadow-sm">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <Shield size={20} className="text-primary" />
+                      </div>
+                      <h3 className="font-bold">{t.dashboard.autoMod}</h3>
                     </div>
-                    <h3 className="font-bold">{t.dashboard.autoMod}</h3>
+                    <div className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </div>
                   </div>
-                  <div className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" defaultChecked />
-                    <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  <p className="text-sm text-muted-foreground mb-6">{t.dashboard.autoModDescription}</p>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.spam}</span>
+                    <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.links}</span>
+                    <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.invites}</span>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">{t.dashboard.autoModDescription}</p>
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.spam}</span>
-                  <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.links}</span>
-                  <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.invites}</span>
-                </div>
-              </div>
 
-              {/* Setting Card 3 - Full Width */}
-              <div className="md:col-span-2 p-8 rounded-3xl bg-card border border-border shadow-sm">
-                <h3 className="font-bold mb-6">{t.dashboard.welcomeMessage}</h3>
-                <textarea
-                  rows={4}
-                  placeholder={t.dashboard.welcomePlaceholder}
-                  className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
-                />
-                <div className="flex flex-wrap gap-2">
-                  {['{user}', '{server}', '{member_count}', '{owner}'].map(tag => (
-                    <button key={tag} className="px-3 py-1 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all text-xs font-mono">
-                      {tag}
-                    </button>
-                  ))}
+                <div className="md:col-span-2 p-8 rounded-3xl bg-card border border-border shadow-sm">
+                  <h3 className="font-bold mb-6">{t.dashboard.welcomeMessage}</h3>
+                  <textarea
+                    rows={4}
+                    placeholder={t.dashboard.welcomePlaceholder}
+                    className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {['{user}', '{server}', '{member_count}', '{owner}'].map(tag => (
+                      <button key={tag} className="px-3 py-1 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all text-xs font-mono">
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
+          {activeTab === 'commands' && (
+            <CommandsManagement guildId={guildId || ''} guildName={activeGuildName} />
+          )}
         </main>
       </div>
     </div>
