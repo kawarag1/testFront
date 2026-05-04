@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Terminal, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
@@ -14,6 +14,15 @@ interface Command {
   name: string;
   desc: string;
   enabled: boolean;
+}
+
+interface GetCommandsResponseItem {
+  guild_id: string;
+  command_name: string;
+}
+
+function normalizeCommandName(value: string): string {
+  return value.trim().replace(/^\//, '');
 }
 
 const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildName }) => {
@@ -38,39 +47,111 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
     c.desc.toLowerCase().includes(search.toLowerCase())
   );
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCommandsState = async () => {
+      try {
+        const response = await fetch(apiUrl(`/api/v1/commands/get_commands/${String(guildId)}`), {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to load commands state: ${response.status}`);
+        }
+
+        const payload = (await response.json()) as unknown;
+        const items = Array.isArray(payload) ? payload : [];
+
+        const disabledCommandNames = new Set(
+          items
+            .filter((item): item is GetCommandsResponseItem => {
+              return Boolean(
+                item &&
+                typeof item === 'object' &&
+                'guild_id' in item &&
+                'command_name' in item &&
+                typeof item.guild_id === 'string' &&
+                typeof item.command_name === 'string' &&
+                item.guild_id === String(guildId)
+              );
+            })
+            .map(item => normalizeCommandName(item.command_name)),
+        );
+
+        if (!cancelled) {
+          setCommands(currentCommands =>
+            currentCommands.map(command => {
+              const commandMatches = disabledCommandNames.has(normalizeCommandName(command.id)) ||
+                disabledCommandNames.has(normalizeCommandName(command.name));
+
+              return commandMatches ? { ...command, enabled: false } : command;
+            }),
+          );
+        }
+      } catch (error) {
+        console.error('Error loading command states:', error);
+      }
+    };
+
+    loadCommandsState();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [guildId]);
+
+  const sendCommandRequest = async (endpoint: string, method: 'POST' | 'DELETE', command: Command) => {
+    const response = await fetch(apiUrl(endpoint), {
+      method,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        guild_id: String(guildId),
+        command_name: String(command.id),
+      }),
+    });
+
+    if (!response.ok) {
+      let backendMessage = '';
+      try {
+        const payload = await response.json();
+        backendMessage = typeof payload?.detail === 'string' ? payload.detail : JSON.stringify(payload);
+      } catch {
+        backendMessage = '';
+      }
+
+      throw new Error(
+        backendMessage
+          ? `Failed to toggle command: ${response.status} (${backendMessage})`
+          : `Failed to toggle command: ${response.status}`,
+      );
+    }
+  };
+
+  const disableCommand = async (command: Command) => {
+    await sendCommandRequest('/api/v1/commands/disable', 'POST', command);
+  };
+
+  const enableCommand = async (command: Command) => {
+    await sendCommandRequest('/api/v1/commands/enable', 'DELETE', command);
+  };
+
   const toggleCommand = async (command: Command) => {
     setTogglingCommandId(command.id);
 
     try {
-      const endpoint = command.enabled ? '/api/v1/commands/disable' : '/api/v1/commands/enable';
-
-      const response = await fetch(apiUrl(endpoint), {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          guild_id: String(guildId),
-          command_name: String(command.id),
-        }),
-      });
-
-      if (!response.ok) {
-        let backendMessage = '';
-        try {
-          const payload = await response.json();
-          backendMessage = typeof payload?.detail === 'string' ? payload.detail : JSON.stringify(payload);
-        } catch {
-          backendMessage = '';
-        }
-
-        throw new Error(
-          backendMessage
-            ? `Failed to toggle command: ${response.status} (${backendMessage})`
-            : `Failed to toggle command: ${response.status}`,
-        );
+      if (command.enabled) {
+        await disableCommand(command);
+      } else {
+        await enableCommand(command);
       }
 
       // Update local state
