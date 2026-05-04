@@ -103,10 +103,7 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
       }
     }
 
-    // Debug logging to help trace unexpected shapes from backend
-    // Remove or change to a logger in production
-    // eslint-disable-next-line no-console
-    console.debug('[checkBotOnGuild] guildId=', guildId, 'status=', status, 'body=', body);
+      // debug logging removed
 
     if (!response.ok) {
       throw new Error(`Failed to check bot status: ${status}`);
@@ -167,9 +164,6 @@ const Guilds: React.FC = () => {
 
     try {
       const isBotAdded = await checkBotOnGuild(guild.id);
-
-      // show a short debug toast so user can see the backend result immediately
-      toast.info(`checkBot: ${guild.id} -> ${String(isBotAdded)}`);
 
       if (isBotAdded) {
         window.localStorage.setItem('selectedGuild', JSON.stringify(guild));
