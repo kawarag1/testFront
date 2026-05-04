@@ -54,7 +54,7 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         },
         body: JSON.stringify({
           guild_id: parseInt(guildId, 10) || guildId,
-          command_name: command.name,
+          command_name: command.name.replace('/', ''),
         }),
       });
 
@@ -102,7 +102,7 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         {filteredCommands.map((cmd) => (
           <div
             key={cmd.id}
-            className="border border-border rounded-2xl overflow-hidden bg-card p-6 flex items-center justify-between hover:bg-card/80 transition-colors"
+            className="border border-border rounded-2xl overflow-hidden bg-card p-6 flex items-center justify-between hover:shadow-md hover:border-primary/30 transition-all duration-200"
           >
             <div className="flex items-center gap-4 flex-1">
               <div className="p-3 bg-primary/10 rounded-lg flex-shrink-0">
@@ -118,19 +118,26 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
             <button
               onClick={() => toggleCommand(cmd)}
               disabled={togglingCommandId === cmd.id}
-              className="ml-4 flex-shrink-0 relative inline-flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="ml-4 flex-shrink-0 relative inline-flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
+              title={cmd.enabled ? 'Отключить команду' : 'Включить команду'}
             >
-              {togglingCommandId === cmd.id && (
-                <Loader2 className="absolute inset-0 m-auto h-5 w-5 animate-spin text-primary" />
+              {togglingCommandId === cmd.id ? (
+                <div className="w-12 h-7 bg-primary rounded-full flex items-center justify-center">
+                  <Loader2 className="h-4 w-4 animate-spin text-white" />
+                </div>
+              ) : (
+                <>
+                  <input
+                    type="checkbox"
+                    checked={cmd.enabled}
+                    onChange={() => {}}
+                    disabled={togglingCommandId === cmd.id}
+                    className="sr-only peer"
+                  />
+                  <div className="w-12 h-7 bg-secondary rounded-full peer peer-checked:bg-primary transition-colors duration-300 shadow-inner group-hover:shadow-md" />
+                  <div className="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 peer-checked:translate-x-5" />
+                </>
               )}
-              <input
-                type="checkbox"
-                checked={cmd.enabled}
-                onChange={() => {}}
-                disabled={togglingCommandId === cmd.id}
-                className="sr-only peer"
-              />
-              <div className="w-14 h-8 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-7 after:w-7 after:transition-all peer-checked:bg-primary"></div>
             </button>
           </div>
         ))}
