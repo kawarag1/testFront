@@ -3,6 +3,7 @@ import { Building2, Loader2, ShieldCheck, TriangleAlert, AlertCircle, Check, X }
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { apiUrl } from '../config/api';
+import { toast } from 'react-toastify';
 
 type Guild = {
   id: string;
@@ -88,13 +89,66 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to check bot status: ${response.status}`);
+    const status = response.status;
+
+    // Try to parse JSON, fall back to text when needed
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch (e) {
+      try {
+        body = await response.text();
+      } catch {
+        body = null;
+      }
     }
 
-    const isBotAdded = await response.json();
-    return Boolean(isBotAdded);
+    // Debug logging to help trace unexpected shapes from backend
+    // Remove or change to a logger in production
+    // eslint-disable-next-line no-console
+    console.debug('[checkBotOnGuild] guildId=', guildId, 'status=', status, 'body=', body);
+
+    if (!response.ok) {
+      throw new Error(`Failed to check bot status: ${status}`);
+    }
+
+    // Normalize common response shapes
+    if (typeof body === 'boolean') {
+      return body;
+    }
+
+    if (typeof body === 'string') {
+      const s = body.trim().toLowerCase();
+      if (s === 'true') return true;
+      if (s === 'false') return false;
+
+      // maybe a JSON string
+      try {
+        const parsed = JSON.parse(body);
+        if (typeof parsed === 'boolean') return parsed;
+        if (parsed && typeof parsed === 'object') {
+          if ('added' in parsed) return Boolean((parsed as any).added);
+          if ('bot' in parsed) return Boolean((parsed as any).bot);
+          if ('isBot' in parsed) return Boolean((parsed as any).isBot);
+          if ('ok' in parsed) return Boolean((parsed as any).ok);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (body && typeof body === 'object') {
+      const obj = body as Record<string, unknown>;
+      if ('added' in obj) return Boolean(obj.added as any);
+      if ('bot' in obj) return Boolean(obj.bot as any);
+      if ('isBot' in obj) return Boolean(obj.isBot as any);
+      if ('ok' in obj) return Boolean(obj.ok as any);
+    }
+
+    // Fallback: truthy body means true
+    return Boolean(body);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error checking bot status:', error);
     throw error;
   }
@@ -113,6 +167,9 @@ const Guilds: React.FC = () => {
 
     try {
       const isBotAdded = await checkBotOnGuild(guild.id);
+
+      // show a short debug toast so user can see the backend result immediately
+      toast.info(`checkBot: ${guild.id} -> ${String(isBotAdded)}`);
 
       if (isBotAdded) {
         window.localStorage.setItem('selectedGuild', JSON.stringify(guild));
