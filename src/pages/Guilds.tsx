@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Building2, Loader2, ShieldCheck, TriangleAlert } from 'lucide-react';
+import { Building2, Loader2, ShieldCheck, TriangleAlert, AlertCircle, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { apiUrl } from '../config/api';
@@ -78,15 +78,54 @@ async function loadGuildsOnce(): Promise<Guild[]> {
   return guildsRequestPromise;
 }
 
+async function checkBotOnGuild(guildId: string): Promise<boolean> {
+  try {
+    const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${guildId}`), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to check bot status: ${response.status}`);
+    }
+
+    const isBotAdded = await response.json();
+    return Boolean(isBotAdded);
+  } catch (error) {
+    console.error('Error checking bot status:', error);
+    throw error;
+  }
+}
+
 const Guilds: React.FC = () => {
   const navigate = useNavigate();
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [checkingGuildId, setCheckingGuildId] = useState<string | null>(null);
+  const [missingBotGuild, setMissingBotGuild] = useState<Guild | null>(null);
 
-  const handleGuildSelect = (guild: Guild) => {
-    window.localStorage.setItem('selectedGuild', JSON.stringify(guild));
-    navigate(`/dashboard/${guild.id}`, { state: { guild } });
+  const handleGuildSelect = async (guild: Guild) => {
+    setCheckingGuildId(guild.id);
+
+    try {
+      const isBotAdded = await checkBotOnGuild(guild.id);
+
+      if (isBotAdded) {
+        window.localStorage.setItem('selectedGuild', JSON.stringify(guild));
+        navigate(`/dashboard/${guild.id}`, { state: { guild } });
+      } else {
+        setMissingBotGuild(guild);
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Ошибка проверки статуса бота';
+      setError(message);
+    } finally {
+      setCheckingGuildId(null);
+    }
   };
 
   useEffect(() => {
@@ -108,6 +147,43 @@ const Guilds: React.FC = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
+
+      {missingBotGuild && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-card rounded-2xl border border-border shadow-lg max-w-sm w-full p-6">
+            <div className="flex items-center gap-3 mb-4 text-amber-500">
+              <AlertCircle className="h-6 w-6 flex-shrink-0" />
+              <h2 className="text-lg font-semibold">Бот не добавлен</h2>
+            </div>
+
+            <p className="text-muted-foreground mb-2">
+              Бот не был добавлен на сервер <strong>{missingBotGuild.name}</strong>.
+            </p>
+
+            <p className="text-sm text-muted-foreground mb-6">
+              Пожалуйста, добавьте бота на ваш сервер, чтобы начать использовать функции бота.
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setMissingBotGuild(null)}
+                className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
+              >
+                Отмена
+              </button>
+              <a
+                href={`https://discord.com/oauth2/authorize?client_id=1403029892387569766&scope=bot&permissions=8&guild_id=${missingBotGuild.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold text-center flex items-center justify-center gap-2"
+              >
+                <Check className="h-4 w-4" />
+                Добавить бота
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="flex-1 pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
@@ -146,13 +222,15 @@ const Guilds: React.FC = () => {
               {guilds.map((guild) => {
                 const iconUrl = guildIconUrl(guild);
                 const initials = guild.name.slice(0, 2).toUpperCase();
+                const isChecking = checkingGuildId === guild.id;
 
                 return (
                   <button
                     key={guild.id}
                     type="button"
                     onClick={() => handleGuildSelect(guild)}
-                    className="rounded-2xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-shadow"
+                    disabled={isChecking || loading}
+                    className="rounded-2xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-4">
                       {iconUrl ? (
@@ -168,8 +246,11 @@ const Guilds: React.FC = () => {
                         </div>
                       )}
 
-                      <div className="min-w-0">
-                        <h3 className="font-semibold truncate">{guild.name}</h3>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold truncate">{guild.name}</h3>
+                          {isChecking && <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />}
+                        </div>
                         <p className="text-xs text-muted-foreground truncate">ID: {guild.id}</p>
                       </div>
                     </div>
