@@ -201,7 +201,7 @@ const Guilds: React.FC = () => {
 
       {missingBotGuild && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-card rounded-2xl border border-border shadow-lg max-w-sm w-full p-6">
+          <div className="bg-card rounded-2xl border border-border shadow-lg max-w-md w-full p-8">
             <div className="flex items-center gap-3 mb-4 text-amber-500">
               <AlertCircle className="h-6 w-6 flex-shrink-0" />
               <h2 className="text-lg font-semibold">Бот не добавлен</h2>
