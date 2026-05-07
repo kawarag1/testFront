@@ -97,6 +97,8 @@ type Dictionary = {
     invites: string;
     welcomeMessage: string;
     welcomePlaceholder: string;
+    farewellMessage: string;
+    farewellPlaceholder: string;
     selectOtherServer: string;
     commands: string;
     unknownGuild: string;
@@ -242,6 +244,8 @@ const dictionaries: Record<Language, Dictionary> = {
       invites: 'Invites',
       welcomeMessage: 'Welcome Message',
       welcomePlaceholder: 'Welcome to the server, {user}!',
+      farewellMessage: 'Farewell Message',
+      farewellPlaceholder: 'Goodbye, {user}. We hope to see you again!',
       selectOtherServer: 'Select another server',
       commands: 'Commands',
       unknownGuild: 'Unknown Guild',
@@ -385,6 +389,8 @@ const dictionaries: Record<Language, Dictionary> = {
       invites: 'Приглашения',
       welcomeMessage: 'Приветственное сообщение',
       welcomePlaceholder: 'Добро пожаловать на сервер, {user}!',
+      farewellMessage: 'Прощальное сообщение',
+      farewellPlaceholder: 'До встречи, {user}! Будем рады видеть вас снова.',
       selectOtherServer: 'Выбрать другой сервер',
       commands: 'Команды',
       unknownGuild: 'Неизвестный сервер',

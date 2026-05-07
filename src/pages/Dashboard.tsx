@@ -6,7 +6,6 @@ import {
   Music, 
   Settings, 
   Users, 
-  MessageSquare, 
   ChevronRight,
   Search,
   LogOut,
@@ -144,29 +143,27 @@ const Dashboard = () => {
               </header>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="p-8 rounded-3xl bg-card border border-border shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <MessageSquare size={20} className="text-primary" />
-                      </div>
-                      <h3 className="font-bold">{t.dashboard.prefix}</h3>
-                    </div>
-                    <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded">{t.dashboard.global}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-6">{t.dashboard.prefixDescription}</p>
-                  <input
-                    type="text"
-                    defaultValue="!"
-                    className="w-full bg-secondary/50 border border-border rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/50 outline-none"
-                  />
-                </div>
-
                 <div className="md:col-span-2 p-8 rounded-3xl bg-card border border-border shadow-sm">
                   <h3 className="font-bold mb-6">{t.dashboard.welcomeMessage}</h3>
                   <textarea
                     rows={4}
                     placeholder={t.dashboard.welcomePlaceholder}
+                    className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {['{user}', '{server}', '{member_count}', '{owner}'].map(tag => (
+                      <button key={tag} className="px-3 py-1 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all text-xs font-mono">
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 p-8 rounded-3xl bg-card border border-border shadow-sm">
+                  <h3 className="font-bold mb-6">{t.dashboard.farewellMessage}</h3>
+                  <textarea
+                    rows={4}
+                    placeholder={t.dashboard.farewellPlaceholder}
                     className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
                   />
                   <div className="flex flex-wrap gap-2">
