@@ -87,6 +87,18 @@ const Navbar = () => {
     }
   };
 
+  const handleLogoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    setIsOpen(false);
+
+    if (location.pathname === '/' && location.hash === '') {
+      event.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  };
+
   const navLinks = [
     { name: t.nav.home, path: '/', icon: HomeIcon },
     { name: t.nav.commands, path: '/commands', icon: BookOpen },
@@ -95,7 +107,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-md border-b border-border py-3' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2 group">
           <div className="p-2 bg-primary rounded-xl group-hover:rotate-12 transition-transform duration-300">
             <Bot className="text-primary-foreground w-6 h-6" />
           </div>
