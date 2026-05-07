@@ -66,9 +66,9 @@ const Navbar = () => {
       setIsAuthorized(false);
       setIsOpen(false);
       navigate('/', { replace: true });
-      toast.success(language === 'ru' ? 'Вы вышли из профиля' : 'You have been signed out');
+      toast.success(t.nav.signedOutSuccess);
     } catch {
-      toast.error(language === 'ru' ? 'Не удалось выйти из профиля' : 'Failed to sign out');
+      toast.error(t.nav.signedOutError);
     }
   };
 
@@ -78,7 +78,7 @@ const Navbar = () => {
   ) => {
     if (!isAuthorized) {
       event.preventDefault();
-      toast.error(language === 'ru' ? 'Вы не авторизованы' : 'You are not authorized');
+      toast.error(t.nav.notAuthorized);
       return;
     }
 
@@ -121,7 +121,7 @@ const Navbar = () => {
           <button
             onClick={() => setLanguage(language === 'en' ? 'ru' : 'en')}
             className="bg-secondary border border-border text-foreground px-4 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all"
-            aria-label="Switch language"
+            aria-label={t.nav.switchLanguageAria}
           >
             {language === 'en' ? 'RU' : 'EN'}
           </button>
@@ -135,7 +135,7 @@ const Navbar = () => {
               onClick={handleLogoutClick}
               className="bg-secondary border border-border text-foreground px-4 py-2.5 rounded-full text-sm font-semibold hover:scale-105 transition-all"
             >
-              {language === 'ru' ? 'Выйти' : 'Logout'}
+              {t.nav.logout}
             </button>
           )}
         </div>
@@ -145,7 +145,7 @@ const Navbar = () => {
           <button
             onClick={() => setLanguage(language === 'en' ? 'ru' : 'en')}
             className="bg-secondary border border-border px-3 py-1.5 rounded-full text-xs font-bold"
-            aria-label="Switch language"
+            aria-label={t.nav.switchLanguageAria}
           >
             {language === 'en' ? 'RU' : 'EN'}
           </button>
@@ -197,7 +197,7 @@ const Navbar = () => {
                   onClick={handleLogoutClick}
                   className="w-full bg-secondary border border-border text-foreground py-4 rounded-xl font-bold"
                 >
-                  {language === 'ru' ? 'Выйти' : 'Logout'}
+                  {t.nav.logout}
                 </button>
               )}
             </div>

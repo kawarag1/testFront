@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { apiUrl } from '../config/api';
 import { toast } from 'react-toastify';
+import { useI18n } from '../i18n';
 
 type Guild = {
   id: string;
@@ -153,6 +154,7 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
 
 const Guilds: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -172,7 +174,7 @@ const Guilds: React.FC = () => {
         setMissingBotGuild(guild);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка проверки статуса бота';
+      const message = err instanceof Error ? err.message : t.guildsPage.checkStatusError;
       setError(message);
     } finally {
       setCheckingGuildId(null);
@@ -185,7 +187,7 @@ const Guilds: React.FC = () => {
         const parsedGuilds = await loadGuildsOnce();
         setGuilds(parsedGuilds);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Ошибка загрузки гильдий';
+        const message = err instanceof Error ? err.message : t.guildsPage.loadGuildsError;
         setError(message);
       } finally {
         setLoading(false);
@@ -193,7 +195,7 @@ const Guilds: React.FC = () => {
     };
 
     loadGuilds();
-  }, []);
+  }, [t.guildsPage.checkStatusError, t.guildsPage.loadGuildsError]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -204,15 +206,15 @@ const Guilds: React.FC = () => {
           <div className="bg-card rounded-2xl border border-border shadow-lg max-w-md w-full p-8">
             <div className="flex items-center gap-3 mb-4 text-amber-500">
               <AlertCircle className="h-6 w-6 flex-shrink-0" />
-              <h2 className="text-lg font-semibold">Бот не добавлен</h2>
+              <h2 className="text-lg font-semibold">{t.guildsPage.botNotAddedTitle}</h2>
             </div>
 
             <p className="text-muted-foreground mb-2">
-              Бот не был добавлен на сервер <strong>{missingBotGuild.name}</strong>.
+              {t.guildsPage.botNotAddedMessage} <strong>{missingBotGuild.name}</strong>.
             </p>
 
             <p className="text-sm text-muted-foreground mb-6">
-              Пожалуйста, добавьте бота на ваш сервер, чтобы начать использовать функции бота.
+              {t.guildsPage.botNotAddedHint}
             </p>
 
             <div className="flex gap-3">
@@ -220,7 +222,7 @@ const Guilds: React.FC = () => {
                 onClick={() => setMissingBotGuild(null)}
                 className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
               >
-                Отмена
+                {t.guildsPage.cancel}
               </button>
               <a
                 href={`https://discord.com/oauth2/authorize?client_id=1403029892387569766&scope=bot&permissions=8&guild_id=${missingBotGuild.id}`}
@@ -229,7 +231,7 @@ const Guilds: React.FC = () => {
                 className="flex-1 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold text-center flex items-center justify-center gap-2"
               >
                 <Check className="h-4 w-4" />
-                Добавить бота
+                {t.guildsPage.addBot}
               </a>
             </div>
           </div>
@@ -239,14 +241,14 @@ const Guilds: React.FC = () => {
       <main className="flex-1 pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold font-serif mb-2">Ваши гильдии</h1>
-            <p className="text-muted-foreground">Список серверов Discord, к которым у вас есть доступ.</p>
+            <h1 className="text-3xl md:text-4xl font-bold font-serif mb-2">{t.guildsPage.title}</h1>
+            <p className="text-muted-foreground">{t.guildsPage.subtitle}</p>
           </div>
 
           {loading && (
             <div className="rounded-2xl border border-border bg-card p-8 flex items-center gap-3">
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
-              <p className="text-muted-foreground">Загружаем гильдии...</p>
+              <p className="text-muted-foreground">{t.guildsPage.loading}</p>
             </div>
           )}
 
@@ -254,7 +256,7 @@ const Guilds: React.FC = () => {
             <div className="rounded-2xl border border-red-500/40 bg-red-500/5 p-8">
               <div className="flex items-center gap-3 mb-3 text-red-500">
                 <TriangleAlert className="h-5 w-5" />
-                <h2 className="text-xl font-semibold">Не удалось получить список гильдий</h2>
+                <h2 className="text-xl font-semibold">{t.guildsPage.failedToLoadTitle}</h2>
               </div>
               <p className="text-muted-foreground">{error}</p>
             </div>
@@ -263,8 +265,8 @@ const Guilds: React.FC = () => {
           {!loading && !error && guilds.length === 0 && (
             <div className="rounded-2xl border border-border bg-card p-10 text-center">
               <Building2 className="h-10 w-10 text-primary mx-auto mb-4" />
-              <h2 className="text-xl font-semibold mb-2">Гильдии не найдены</h2>
-              <p className="text-muted-foreground">API вернул пустой список для текущего пользователя.</p>
+              <h2 className="text-xl font-semibold mb-2">{t.guildsPage.noGuildsTitle}</h2>
+              <p className="text-muted-foreground">{t.guildsPage.noGuildsDesc}</p>
             </div>
           )}
 
@@ -308,12 +310,12 @@ const Guilds: React.FC = () => {
 
                     <div className="mt-4 flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">
-                        Участников: {guild.members ?? '—'}
+                        {t.guildsPage.membersLabel}: {guild.members ?? '—'}
                       </span>
                       {guild.owner && (
                         <span className="inline-flex items-center gap-1 text-primary font-semibold">
                           <ShieldCheck className="h-4 w-4" />
-                          Владелец
+                          {t.guildsPage.ownerLabel}
                         </span>
                       )}
                     </div>

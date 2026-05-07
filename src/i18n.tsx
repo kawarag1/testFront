@@ -10,6 +10,11 @@ type Dictionary = {
     addToDiscord: string;
     authorize: string;
     myServers: string;
+    logout: string;
+    switchLanguageAria: string;
+    signedOutSuccess: string;
+    signedOutError: string;
+    notAuthorized: string;
   };
   home: {
     trustedBy: string;
@@ -92,6 +97,47 @@ type Dictionary = {
     invites: string;
     welcomeMessage: string;
     welcomePlaceholder: string;
+    selectOtherServer: string;
+    commands: string;
+    unknownGuild: string;
+  };
+  guildsPage: {
+    title: string;
+    subtitle: string;
+    loading: string;
+    failedToLoadTitle: string;
+    noGuildsTitle: string;
+    noGuildsDesc: string;
+    membersLabel: string;
+    ownerLabel: string;
+    botNotAddedTitle: string;
+    botNotAddedMessage: string;
+    botNotAddedHint: string;
+    cancel: string;
+    addBot: string;
+    checkStatusError: string;
+    loadGuildsError: string;
+  };
+  callbackPage: {
+    authTitle: string;
+    pleaseWait: string;
+    authErrorTitle: string;
+    backHome: string;
+    codeNotFound: string;
+    emptyResponse: string;
+    authFailedPrefix: string;
+  };
+  commandsManagement: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    commandLabel: string;
+    commandDisabled: string;
+    commandEnabled: string;
+    toggleError: string;
+    disableCommandTitle: string;
+    enableCommandTitle: string;
+    empty: string;
   };
   notFound: {
     title: string;
@@ -109,6 +155,11 @@ const dictionaries: Record<Language, Dictionary> = {
       addToDiscord: 'Add to Discord',
       authorize: 'Authorize',
       myServers: 'My Servers',
+      logout: 'Logout',
+      switchLanguageAria: 'Switch language',
+      signedOutSuccess: 'You have been signed out',
+      signedOutError: 'Failed to sign out',
+      notAuthorized: 'You are not authorized',
     },
     home: {
       trustedBy: 'Trusted by 50,000+ Servers',
@@ -191,6 +242,47 @@ const dictionaries: Record<Language, Dictionary> = {
       invites: 'Invites',
       welcomeMessage: 'Welcome Message',
       welcomePlaceholder: 'Welcome to the server, {user}!',
+      selectOtherServer: 'Select another server',
+      commands: 'Commands',
+      unknownGuild: 'Unknown Guild',
+    },
+    guildsPage: {
+      title: 'Your Guilds',
+      subtitle: 'List of Discord servers you have access to.',
+      loading: 'Loading guilds...',
+      failedToLoadTitle: 'Failed to fetch guild list',
+      noGuildsTitle: 'Guilds not found',
+      noGuildsDesc: 'The API returned an empty list for the current user.',
+      membersLabel: 'Members',
+      ownerLabel: 'Owner',
+      botNotAddedTitle: 'Bot is not added',
+      botNotAddedMessage: 'The bot has not been added to server',
+      botNotAddedHint: 'Please add the bot to your server to start using its features.',
+      cancel: 'Cancel',
+      addBot: 'Add bot',
+      checkStatusError: 'Failed to check bot status',
+      loadGuildsError: 'Failed to load guilds',
+    },
+    callbackPage: {
+      authTitle: 'Discord Authorization',
+      pleaseWait: 'Please wait...',
+      authErrorTitle: 'Authorization error',
+      backHome: 'Back to home',
+      codeNotFound: 'Authorization code not found',
+      emptyResponse: 'Empty response from authorization server',
+      authFailedPrefix: 'Authorization error',
+    },
+    commandsManagement: {
+      title: 'Commands management',
+      subtitle: 'Enable and disable bot commands for your server',
+      searchPlaceholder: 'Search commands...',
+      commandLabel: 'Command',
+      commandDisabled: 'disabled',
+      commandEnabled: 'enabled',
+      toggleError: 'Failed to toggle command',
+      disableCommandTitle: 'Disable command',
+      enableCommandTitle: 'Enable command',
+      empty: 'No commands found',
     },
     notFound: {
       title: 'OOPS! Page Not Found',
@@ -206,6 +298,11 @@ const dictionaries: Record<Language, Dictionary> = {
       addToDiscord: 'Добавить в Discord',
       authorize: 'Авторизоваться',
       myServers: 'Мои серверы',
+      logout: 'Выйти',
+      switchLanguageAria: 'Сменить язык',
+      signedOutSuccess: 'Вы вышли из профиля',
+      signedOutError: 'Не удалось выйти из профиля',
+      notAuthorized: 'Вы не авторизованы',
     },
     home: {
       trustedBy: 'Нам доверяют 50 000+ серверов',
@@ -288,6 +385,47 @@ const dictionaries: Record<Language, Dictionary> = {
       invites: 'Приглашения',
       welcomeMessage: 'Приветственное сообщение',
       welcomePlaceholder: 'Добро пожаловать на сервер, {user}!',
+      selectOtherServer: 'Выбрать другой сервер',
+      commands: 'Команды',
+      unknownGuild: 'Неизвестный сервер',
+    },
+    guildsPage: {
+      title: 'Ваши гильдии',
+      subtitle: 'Список серверов Discord, к которым у вас есть доступ.',
+      loading: 'Загружаем гильдии...',
+      failedToLoadTitle: 'Не удалось получить список гильдий',
+      noGuildsTitle: 'Гильдии не найдены',
+      noGuildsDesc: 'API вернул пустой список для текущего пользователя.',
+      membersLabel: 'Участников',
+      ownerLabel: 'Владелец',
+      botNotAddedTitle: 'Бот не добавлен',
+      botNotAddedMessage: 'Бот не был добавлен на сервер',
+      botNotAddedHint: 'Пожалуйста, добавьте бота на ваш сервер, чтобы начать использовать функции бота.',
+      cancel: 'Отмена',
+      addBot: 'Добавить бота',
+      checkStatusError: 'Ошибка проверки статуса бота',
+      loadGuildsError: 'Ошибка загрузки гильдий',
+    },
+    callbackPage: {
+      authTitle: 'Авторизация через Discord',
+      pleaseWait: 'Пожалуйста, подождите...',
+      authErrorTitle: 'Ошибка авторизации',
+      backHome: 'Вернуться на главную',
+      codeNotFound: 'Код авторизации не найден',
+      emptyResponse: 'Пустой ответ от сервера авторизации',
+      authFailedPrefix: 'Ошибка авторизации',
+    },
+    commandsManagement: {
+      title: 'Управление командами',
+      subtitle: 'Включайте и выключайте команды бота для вашего сервера',
+      searchPlaceholder: 'Поиск команд...',
+      commandLabel: 'Команда',
+      commandDisabled: 'отключена',
+      commandEnabled: 'включена',
+      toggleError: 'Ошибка при переключении команды',
+      disableCommandTitle: 'Отключить команду',
+      enableCommandTitle: 'Включить команду',
+      empty: 'Команды не найдены',
     },
     notFound: {
       title: 'УПС! Страница не найдена',

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from 'lucide-react';
 import { apiUrl } from '../config/api';
+import { useI18n } from '../i18n';
 
 type CallbackResponse = {
   user?: unknown;
@@ -55,6 +56,7 @@ function exchangeCallbackCode(code: string): Promise<CallbackResponse> {
 
 const Callback: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,7 +70,7 @@ const Callback: React.FC = () => {
       console.log('Callback: code=', code);
 
       if (!code) {
-        setError('Код авторизации не найден');
+        setError(t.callbackPage.codeNotFound);
         setLoading(false);
         return;
       }
@@ -78,20 +80,20 @@ const Callback: React.FC = () => {
         const data = await exchangeCallbackCode(code);
 
         if (!data) {
-          throw new Error('Пустой ответ от сервера авторизации');
+          throw new Error(t.callbackPage.emptyResponse);
         }
 
         setTimeout(() => navigate('/guilds', { replace: true }), 1500);
       } catch (err) {
         console.error('Авторизация: исключение в handleCallback', err);
-        const message = err instanceof Error ? err.message : 'Произошла ошибка при авторизации';
-        setError(`Ошибка авторизации: ${message}`);
+        const message = err instanceof Error ? err.message : t.callbackPage.authErrorTitle;
+        setError(`${t.callbackPage.authFailedPrefix}: ${message}`);
         setLoading(false);
       }
     };
 
     handleCallback();
-  }, [navigate]);
+  }, [navigate, t.callbackPage.authErrorTitle, t.callbackPage.authFailedPrefix, t.callbackPage.codeNotFound, t.callbackPage.emptyResponse]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-background/50">
@@ -101,20 +103,20 @@ const Callback: React.FC = () => {
             <div className="flex justify-center mb-4">
               <Loader className="w-12 h-12 text-primary animate-spin" />
             </div>
-            <h1 className="text-2xl font-bold mb-2">Авторизация через Discord</h1>
-            <p className="text-muted-foreground">Пожалуйста, подождите...</p>
+            <h1 className="text-2xl font-bold mb-2">{t.callbackPage.authTitle}</h1>
+            <p className="text-muted-foreground">{t.callbackPage.pleaseWait}</p>
           </>
         )}
 
         {error && (
           <>
-            <h1 className="text-2xl font-bold text-red-500 mb-2">Ошибка авторизации</h1>
+            <h1 className="text-2xl font-bold text-red-500 mb-2">{t.callbackPage.authErrorTitle}</h1>
             <p className="text-muted-foreground mb-6">{error}</p>
             <button
               onClick={() => window.location.href = '/'}
               className="bg-primary text-primary-foreground px-6 py-2.5 rounded-full font-semibold hover:scale-105 transition-all"
             >
-              Вернуться на главную
+              {t.callbackPage.backHome}
             </button>
           </>
         )}

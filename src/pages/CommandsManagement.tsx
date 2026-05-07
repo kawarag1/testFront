@@ -159,10 +159,10 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         c.id === command.id ? { ...c, enabled: !c.enabled } : c
       ));
 
-      const action = command.enabled ? 'отключена' : 'включена';
-      toast.success(`Команда ${command.name} ${action}`);
+      const action = command.enabled ? t.commandsManagement.commandDisabled : t.commandsManagement.commandEnabled;
+      toast.success(`${t.commandsManagement.commandLabel} ${command.name} ${action}`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Ошибка при переключении команды';
+      const message = error instanceof Error ? error.message : t.commandsManagement.toggleError;
       toast.error(message);
       console.error('Error toggling command:', error);
     } finally {
@@ -173,15 +173,15 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
   return (
     <div className="max-w-4xl mx-auto">
       <header className="mb-12">
-        <h1 className="text-3xl font-bold font-serif mb-2">Управление командами: {guildName}</h1>
-        <p className="text-muted-foreground">Включайте и выключайте команды бота для вашего сервера</p>
+        <h1 className="text-3xl font-bold font-serif mb-2">{t.commandsManagement.title}: {guildName}</h1>
+        <p className="text-muted-foreground">{t.commandsManagement.subtitle}</p>
       </header>
 
       <div className="relative mb-12">
         <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
         <input
           type="text"
-          placeholder="Поиск команд..."
+          placeholder={t.commandsManagement.searchPlaceholder}
           className="w-full bg-secondary/50 border border-border rounded-2xl py-5 pl-16 pr-6 focus:ring-2 focus:ring-primary/50 outline-none transition-all text-lg"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -208,7 +208,7 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
               onClick={() => toggleCommand(cmd)}
               disabled={togglingCommandId === cmd.id}
               className="ml-4 flex-shrink-0 relative inline-flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
-              title={cmd.enabled ? 'Отключить команду' : 'Включить команду'}
+              title={cmd.enabled ? t.commandsManagement.disableCommandTitle : t.commandsManagement.enableCommandTitle}
             >
               {togglingCommandId === cmd.id ? (
                 <div className="w-12 h-7 bg-primary rounded-full flex items-center justify-center">
@@ -234,7 +234,7 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         {filteredCommands.length === 0 && (
           <div className="text-center py-12">
             <Terminal size={48} className="mx-auto text-muted-foreground mb-4 opacity-50" />
-            <p className="text-muted-foreground text-lg">Команды не найдены</p>
+            <p className="text-muted-foreground text-lg">{t.commandsManagement.empty}</p>
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Zap, Music, Star, ChevronRight, Sparkles } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -7,6 +8,14 @@ import { useI18n } from '../i18n';
 
 const Home = () => {
   const { t } = useI18n();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#features') {
+      const featuresSection = document.getElementById('features');
+      featuresSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [location.hash]);
 
   const features = [
     { icon: Shield, title: t.home.featureModerationTitle, desc: t.home.featureModerationDesc },
@@ -58,7 +67,7 @@ const Home = () => {
         </section>
 
         {/* Features Grid */}
-        <section className="py-24 max-w-7xl mx-auto px-6">
+        <section id="features" className="py-24 max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-4xl font-bold font-serif mb-4">{t.home.featuresTitle}</h2>
             <p className="text-muted-foreground text-lg">{t.home.featuresSubtitle}</p>

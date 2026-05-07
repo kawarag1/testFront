@@ -55,7 +55,7 @@ const Dashboard = () => {
     }
   }
 
-  const activeGuildName = selectedGuild?.name || guildId || 'Unknown Guild';
+  const activeGuildName = selectedGuild?.name || guildId || t.dashboard.unknownGuild;
 
   const servers = [
     {
@@ -73,7 +73,7 @@ const Dashboard = () => {
     { id: 'music', name: t.dashboard.menuMusic, icon: Music },
     { id: 'members', name: t.dashboard.menuMembers, icon: Users },
     { id: 'logs', name: t.dashboard.menuLogs, icon: Activity },
-    { id: 'commands', name: 'Commands', icon: Terminal },
+    { id: 'commands', name: t.dashboard.commands, icon: Terminal },
   ];
 
   return (
@@ -112,7 +112,7 @@ const Dashboard = () => {
                 to="/guilds"
                 className="w-full flex items-center justify-between gap-3 p-3 rounded-xl mt-3 text-sm font-medium bg-secondary/50 hover:bg-secondary transition-all"
               >
-                Выбрать другой сервер
+                {t.dashboard.selectOtherServer}
                 <ChevronRight size={16} />
               </Link>
             </div>
