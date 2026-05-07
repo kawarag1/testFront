@@ -162,7 +162,7 @@ const dictionaries: Record<Language, Dictionary> = {
       notAuthorized: 'You are not authorized',
     },
     home: {
-      trustedBy: 'Trusted by 50,000+ Servers',
+      trustedBy: 'The Most Powerful Discord Bot',
       heroTitleTop: 'The Ultimate Assistant',
       heroTitleAccent: 'For Your Community',
       heroDescription: 'Helper brings professional-grade moderation, entertainment, and utility tools to your Discord server in one powerful package.',
@@ -305,7 +305,7 @@ const dictionaries: Record<Language, Dictionary> = {
       notAuthorized: 'Вы не авторизованы',
     },
     home: {
-      trustedBy: 'Нам доверяют 50 000+ серверов',
+      trustedBy: 'Сделайте ваш сервер лучше',
       heroTitleTop: 'Лучший помощник',
       heroTitleAccent: 'Для вашего сообщества',
       heroDescription: 'Helper объединяет профессиональную модерацию, развлечения и полезные инструменты для вашего Discord-сервера в одном мощном решении.',
