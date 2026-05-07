@@ -8,7 +8,6 @@ import {
   Settings, 
   Users, 
   MessageSquare, 
-  Bell, 
   ChevronRight,
   Search,
   LogOut,
@@ -142,15 +141,9 @@ const Dashboard = () => {
                   <h1 className="text-3xl font-bold font-serif mb-2">{t.dashboard.generalSettings}: {activeGuildName}</h1>
                   <p className="text-muted-foreground">{t.dashboard.configureBasic}</p>
                 </div>
-                <div className="flex gap-3">
-                  <button className="p-3 rounded-xl bg-secondary border border-border hover:bg-secondary/80 transition-all relative">
-                    <Bell size={20} />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
-                  </button>
-                  <button className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
-                    {t.dashboard.saveChanges}
-                  </button>
-                </div>
+                <button className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
+                  {t.dashboard.saveChanges}
+                </button>
               </header>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
