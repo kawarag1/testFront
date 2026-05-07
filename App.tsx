@@ -3,7 +3,7 @@ import '@radix-ui/themes/styles.css';
 import { Theme } from '@radix-ui/themes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Routes, Route, useLocation } from 'react-router-dom';
 
 import Home from './src/pages/Home.tsx';
 import Commands from './src/pages/Commands.tsx';
@@ -13,6 +13,16 @@ import Guilds from './src/pages/Guilds';
 import NotFound from './src/pages/NotFound.tsx';
 import { I18nProvider } from './src/i18n.tsx';
 import { getSessionUser } from './src/utils/auth.ts';
+
+const ScrollToTopOnRouteChange: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
+  return null;
+};
 
 const ProtectedDashboardRoute: React.FC = () => {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
@@ -55,6 +65,7 @@ const App: React.FC = () => {
     <I18nProvider>
       <Theme appearance="light" radius="large" scaling="100%">
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ScrollToTopOnRouteChange />
           <main className="min-h-screen font-sans selection:bg-primary/20 selection:text-primary">
             <Routes>
               <Route path="/" element={<Home />} />

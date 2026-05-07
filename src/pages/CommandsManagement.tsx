@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Search, Terminal, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
@@ -30,17 +30,46 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
   const [togglingCommandId, setTogglingCommandId] = useState<string | null>(null);
   const { t } = useI18n();
 
-  const [commands, setCommands] = useState<Command[]>([
-    { id: 'ban', name: '/ban', desc: t.commandsPage.banDesc, enabled: true },
-    { id: 'kick', name: '/kick', desc: t.commandsPage.kickDesc, enabled: true },
-    { id: 'play', name: '/play', desc: t.commandsPage.playDesc, enabled: true },
-    { id: 'skip', name: '/skip', desc: t.commandsPage.skipDesc, enabled: true },
-    { id: 'help', name: '/help', desc: t.commandsPage.helpDesc, enabled: true },
-    { id: 'ping', name: '/ping', desc: t.commandsPage.pingDesc, enabled: true },
-    { id: 'about', name: '/about', desc: t.commandsPage.aboutDesc, enabled: true },
-    { id: 'clear', name: '/clear', desc: t.commandsPage.clearDesc, enabled: true },
-    { id: 'create_voice', name: '/create_voice', desc: t.commandsPage.createVoiceDesc, enabled: true },
-  ]);
+  const localizedCommandTemplates = useMemo(
+    () => [
+      { id: 'ban', name: '/ban', desc: t.commandsPage.banDesc },
+      { id: 'kick', name: '/kick', desc: t.commandsPage.kickDesc },
+      { id: 'play', name: '/play', desc: t.commandsPage.playDesc },
+      { id: 'skip', name: '/skip', desc: t.commandsPage.skipDesc },
+      { id: 'help', name: '/help', desc: t.commandsPage.helpDesc },
+      { id: 'ping', name: '/ping', desc: t.commandsPage.pingDesc },
+      { id: 'about', name: '/about', desc: t.commandsPage.aboutDesc },
+      { id: 'clear', name: '/clear', desc: t.commandsPage.clearDesc },
+      { id: 'create_voice', name: '/create_voice', desc: t.commandsPage.createVoiceDesc },
+    ],
+    [
+      t.commandsPage.banDesc,
+      t.commandsPage.kickDesc,
+      t.commandsPage.playDesc,
+      t.commandsPage.skipDesc,
+      t.commandsPage.helpDesc,
+      t.commandsPage.pingDesc,
+      t.commandsPage.aboutDesc,
+      t.commandsPage.clearDesc,
+      t.commandsPage.createVoiceDesc,
+    ],
+  );
+
+  const [commands, setCommands] = useState<Command[]>(
+    localizedCommandTemplates.map((command) => ({ ...command, enabled: true })),
+  );
+
+  useEffect(() => {
+    setCommands((currentCommands) => {
+      return localizedCommandTemplates.map((localizedCommand) => {
+        const existing = currentCommands.find((command) => command.id === localizedCommand.id);
+        return {
+          ...localizedCommand,
+          enabled: existing?.enabled ?? true,
+        };
+      });
+    });
+  }, [localizedCommandTemplates]);
 
   const filteredCommands = commands.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
