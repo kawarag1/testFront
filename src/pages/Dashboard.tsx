@@ -67,7 +67,6 @@ const Dashboard = () => {
 
   const menuItems = [
     { id: 'general', name: t.dashboard.menuGeneral, icon: Settings },
-    { id: 'mod', name: t.dashboard.menuModeration, icon: Shield },
     { id: 'music', name: t.dashboard.menuMusic, icon: Music },
     { id: 'members', name: t.dashboard.menuMembers, icon: Users },
     { id: 'logs', name: t.dashboard.menuLogs, icon: Activity },
@@ -161,27 +160,6 @@ const Dashboard = () => {
                     defaultValue="!"
                     className="w-full bg-secondary/50 border border-border rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/50 outline-none"
                   />
-                </div>
-
-                <div className="p-8 rounded-3xl bg-card border border-border shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Shield size={20} className="text-primary" />
-                      </div>
-                      <h3 className="font-bold">{t.dashboard.autoMod}</h3>
-                    </div>
-                    <div className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-6">{t.dashboard.autoModDescription}</p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.spam}</span>
-                    <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.links}</span>
-                    <span className="px-3 py-1 rounded-full bg-secondary text-[10px] font-bold">{t.dashboard.invites}</span>
-                  </div>
                 </div>
 
                 <div className="md:col-span-2 p-8 rounded-3xl bg-card border border-border shadow-sm">
