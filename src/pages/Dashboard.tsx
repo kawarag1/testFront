@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { 
   LayoutDashboard, 
-  Shield, 
   Music, 
   Settings, 
   Users, 
@@ -115,7 +114,6 @@ const Dashboard = () => {
                 <ChevronRight size={16} />
               </Link>
             </div>
-
             <div className="space-y-1">
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground px-3 mb-4">{t.dashboard.settings}</p>
               {menuItems.map(item => (
