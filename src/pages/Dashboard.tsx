@@ -19,9 +19,9 @@ import { useI18n } from '../i18n';
 type Guild = {
   id: string;
   name: string;
-  icon?: string | null;
+  icon_url?: string | null;
   owner?: boolean;
-  members?: number;
+  approximate_member_count?: number;
 };
 
 type DashboardLocationState = {
@@ -59,7 +59,7 @@ const Dashboard = () => {
       id: selectedGuild?.id || guildId || 'selected',
       name: activeGuildName,
       icon: activeGuildName.slice(0, 2).toUpperCase(),
-      members: selectedGuild?.members ? String(selectedGuild.members) : '—',
+      members: selectedGuild?.approximate_member_count ? String(selectedGuild.approximate_member_count) : '—',
       active: true,
     },
   ];
