@@ -42,11 +42,7 @@ function toGuildArray(payload: unknown): Guild[] {
 }
 
 function guildIconUrl(guild: Guild): string | null {
-  if (!guild.icon_url) {
-    return null;
-  }
-
-  return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon_url}.png?size=128`;
+  return guild.icon_url || null;
 }
 
 async function loadGuildsOnce(): Promise<Guild[]> {
