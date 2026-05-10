@@ -477,7 +477,7 @@ const dictionaries: Record<Language, Dictionary> = {
     membersManagement: {
       title: 'Управление участниками',
       subtitle: 'Ищите участников и быстро блокируйте или исключайте их с сервера',
-      searchPlaceholder: 'Поиск по имени...',
+      searchPlaceholder: 'Поиск по прозвищу...',
       loading: 'Загружаем участников...',
       empty: 'Участники не найдены',
       noGuildId: 'Сервер не выбран',
