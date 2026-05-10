@@ -81,7 +81,7 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
 
     const loadCommandsState = async () => {
       try {
-        const response = await fetch(apiUrl(`/api/v1/commands/get_commands/${String(guildId)}`), {
+        const response = await fetch(apiUrl(`/api/v1/commands/get_disabled_commands/${String(guildId)}`), {
           method: 'GET',
           credentials: 'include',
           headers: {
