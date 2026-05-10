@@ -45,6 +45,19 @@ function guildIconUrl(guild: Guild): string | null {
   return guild.icon_url || null;
 }
 
+function pluralizeMembers(count: number | undefined): string {
+  if (count === undefined || count === null) return '—';
+  
+  const num = count % 100;
+  if (num >= 11 && num <= 14) return `${count} участников`;
+  
+  const lastDigit = count % 10;
+  if (lastDigit === 1) return `${count} участник`;
+  if (lastDigit >= 2 && lastDigit <= 4) return `${count} участника`;
+  
+  return `${count} участников`;
+}
+
 async function loadGuildsOnce(): Promise<Guild[]> {
   if (guildsRequestPromise) {
     return guildsRequestPromise;
@@ -311,7 +324,7 @@ const Guilds: React.FC = () => {
 
                     <div className="mt-4 flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">
-                        {t.guildsPage.membersLabel}: {guild.approximate_member_count ?? '—'}
+                        {pluralizeMembers(guild.approximate_member_count)}
                       </span>
                       {guild.owner && (
                         <span className="inline-flex items-center gap-1 text-primary font-semibold">

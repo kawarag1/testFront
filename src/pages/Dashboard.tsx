@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Music, 
@@ -34,6 +34,19 @@ const Dashboard = () => {
   const location = useLocation();
   const { t } = useI18n();
 
+  const pluralizeMembers = (count: number | undefined): string => {
+    if (count === undefined || count === null) return '—';
+    
+    const num = count % 100;
+    if (num >= 11 && num <= 14) return `${count} участников`;
+    
+    const lastDigit = count % 10;
+    if (lastDigit === 1) return `${count} участник`;
+    if (lastDigit >= 2 && lastDigit <= 4) return `${count} участника`;
+    
+    return `${count} участников`;
+  };
+
   const locationState = location.state as DashboardLocationState | null;
 
   let selectedGuild: Guild | null = locationState?.guild ?? null;
@@ -59,7 +72,7 @@ const Dashboard = () => {
       id: selectedGuild?.id || guildId || 'selected',
       name: activeGuildName,
       icon: activeGuildName.slice(0, 2).toUpperCase(),
-      members: selectedGuild?.approximate_member_count ? String(selectedGuild.approximate_member_count) : '—',
+      members: pluralizeMembers(selectedGuild?.approximate_member_count),
       active: true,
     },
   ];
