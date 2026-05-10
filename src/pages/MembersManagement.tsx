@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Search, Users, Loader2, Ban, UserX } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../config/api';
@@ -68,10 +68,15 @@ type MemberAction = 'ban' | 'kick';
 
 const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildName }) => {
   const { t } = useI18n();
+  const tRef = useRef(t);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<GuildMember[]>([]);
+
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -80,7 +85,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
       if (!guildId) {
         setMembers([]);
         setLoading(false);
-        setError(t.membersManagement.noGuildId);
+        setError(tRef.current.membersManagement.noGuildId);
         return;
       }
 
@@ -93,7 +98,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
           setMembers(nextMembers);
         }
       } catch (e) {
-        const message = e instanceof Error ? e.message : t.membersManagement.loadError;
+        const message = e instanceof Error ? e.message : tRef.current.membersManagement.loadError;
         if (!cancelled) {
           setError(message);
         }
@@ -109,7 +114,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
     return () => {
       cancelled = true;
     };
-  }, [guildId, t.membersManagement.loadError, t.membersManagement.noGuildId]);
+  }, [guildId]);
 
   const filteredMembers = useMemo(
     () => members.filter((member) => member.username.toLowerCase().includes(search.toLowerCase())),
