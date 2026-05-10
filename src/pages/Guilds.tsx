@@ -45,17 +45,17 @@ function guildIconUrl(guild: Guild): string | null {
   return guild.icon_url || null;
 }
 
-function pluralizeMembers(count: number | undefined): string {
+function pluralizeMembers(count: number | undefined, singular: string, plural2: string, plural5: string): string {
   if (count === undefined || count === null) return '—';
   
   const num = count % 100;
-  if (num >= 11 && num <= 14) return `${count} участников`;
+  if (num >= 11 && num <= 14) return `${count} ${plural5}`;
   
   const lastDigit = count % 10;
-  if (lastDigit === 1) return `${count} участник`;
-  if (lastDigit >= 2 && lastDigit <= 4) return `${count} участника`;
+  if (lastDigit === 1) return `${count} ${singular}`;
+  if (lastDigit >= 2 && lastDigit <= 4) return `${count} ${plural2}`;
   
-  return `${count} участников`;
+  return `${count} ${plural5}`;
 }
 
 async function loadGuildsOnce(): Promise<Guild[]> {
@@ -101,7 +101,6 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
 
     const status = response.status;
 
-    // Try to parse JSON, fall back to text when needed
     let body: unknown;
     try {
       body = await response.json();
@@ -113,13 +112,11 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
       }
     }
 
-      // debug logging removed
 
     if (!response.ok) {
       throw new Error(`Failed to check bot status: ${status}`);
     }
 
-    // Normalize common response shapes
     if (typeof body === 'boolean') {
       return body;
     }
@@ -129,7 +126,6 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
       if (s === 'true') return true;
       if (s === 'false') return false;
 
-      // maybe a JSON string
       try {
         const parsed = JSON.parse(body);
         if (typeof parsed === 'boolean') return parsed;
@@ -140,7 +136,7 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
           if ('ok' in parsed) return Boolean((parsed as any).ok);
         }
       } catch {
-        // ignore
+
       }
     }
 
@@ -152,10 +148,9 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
       if ('ok' in obj) return Boolean(obj.ok as any);
     }
 
-    // Fallback: truthy body means true
+    
     return Boolean(body);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Error checking bot status:', error);
     throw error;
   }
@@ -324,7 +319,7 @@ const Guilds: React.FC = () => {
 
                     <div className="mt-4 flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">
-                        {pluralizeMembers(guild.approximate_member_count)}
+                        {pluralizeMembers(guild.approximate_member_count, t.guildsPage.memberSingular, t.guildsPage.memberPlural2, t.guildsPage.memberPlural5)}
                       </span>
                       {guild.owner && (
                         <span className="inline-flex items-center gap-1 text-primary font-semibold">

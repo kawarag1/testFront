@@ -38,13 +38,13 @@ const Dashboard = () => {
     if (count === undefined || count === null) return '—';
     
     const num = count % 100;
-    if (num >= 11 && num <= 14) return `${count} участников`;
+    if (num >= 11 && num <= 14) return `${count} ${t.guildsPage.memberPlural5}`;
     
     const lastDigit = count % 10;
-    if (lastDigit === 1) return `${count} участник`;
-    if (lastDigit >= 2 && lastDigit <= 4) return `${count} участника`;
+    if (lastDigit === 1) return `${count} ${t.guildsPage.memberSingular}`;
+    if (lastDigit >= 2 && lastDigit <= 4) return `${count} ${t.guildsPage.memberPlural2}`;
     
-    return `${count} участников`;
+    return `${count} ${t.guildsPage.memberPlural5}`;
   };
 
   const locationState = location.state as DashboardLocationState | null;

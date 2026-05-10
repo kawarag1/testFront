@@ -111,6 +111,9 @@ type Dictionary = {
     noGuildsTitle: string;
     noGuildsDesc: string;
     membersLabel: string;
+    memberSingular: string;
+    memberPlural2: string;
+    memberPlural5: string;
     ownerLabel: string;
     botNotAddedTitle: string;
     botNotAddedMessage: string;
@@ -258,6 +261,9 @@ const dictionaries: Record<Language, Dictionary> = {
       noGuildsTitle: 'Guilds not found',
       noGuildsDesc: 'The API returned an empty list for the current user.',
       membersLabel: 'Members',
+      memberSingular: 'member',
+      memberPlural2: 'members',
+      memberPlural5: 'members',
       ownerLabel: 'Owner',
       botNotAddedTitle: 'Bot is not added',
       botNotAddedMessage: 'The bot has not been added to server',
@@ -403,6 +409,9 @@ const dictionaries: Record<Language, Dictionary> = {
       noGuildsTitle: 'Гильдии не найдены',
       noGuildsDesc: 'API вернул пустой список для текущего пользователя.',
       membersLabel: 'Участников',
+      memberSingular: 'участник',
+      memberPlural2: 'участника',
+      memberPlural5: 'участников',
       ownerLabel: 'Владелец',
       botNotAddedTitle: 'Бот не добавлен',
       botNotAddedMessage: 'Бот не был добавлен на сервер',
