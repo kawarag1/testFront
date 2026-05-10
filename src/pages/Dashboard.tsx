@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import CommandsManagement from './CommandsManagement.tsx';
+import MembersManagement from './MembersManagement.tsx';
 import { useI18n } from '../i18n';
 
 type Guild = {
@@ -192,6 +193,9 @@ const Dashboard = () => {
           )}
           {activeTab === 'commands' && (
             <CommandsManagement guildId={guildId || ''} guildName={activeGuildName} />
+          )}
+          {activeTab === 'members' && (
+            <MembersManagement guildId={guildId || ''} guildName={activeGuildName} />
           )}
         </main>
       </div>

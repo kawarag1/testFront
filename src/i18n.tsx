@@ -144,6 +144,22 @@ type Dictionary = {
     enableCommandTitle: string;
     empty: string;
   };
+  membersManagement: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    loading: string;
+    empty: string;
+    noGuildId: string;
+    loadError: string;
+    rolesLabel: string;
+    noRoles: string;
+    banAction: string;
+    kickAction: string;
+    banSuccess: string;
+    kickSuccess: string;
+    actionError: string;
+  };
   notFound: {
     title: string;
     description: string;
@@ -294,6 +310,22 @@ const dictionaries: Record<Language, Dictionary> = {
       enableCommandTitle: 'Enable command',
       empty: 'No commands found',
     },
+    membersManagement: {
+      title: 'Members management',
+      subtitle: 'Find members and quickly ban or kick them from your server',
+      searchPlaceholder: 'Search by nickname...',
+      loading: 'Loading members...',
+      empty: 'No members found',
+      noGuildId: 'Guild is not selected',
+      loadError: 'Failed to load members',
+      rolesLabel: 'Roles',
+      noRoles: 'No roles',
+      banAction: 'Ban',
+      kickAction: 'Kick',
+      banSuccess: 'User {username} has been banned',
+      kickSuccess: 'User {username} has been kicked',
+      actionError: 'Failed to execute member action',
+    },
     notFound: {
       title: 'OOPS! Page Not Found',
       description: 'We can\'t seem to find the page you are looking for!',
@@ -441,6 +473,22 @@ const dictionaries: Record<Language, Dictionary> = {
       disableCommandTitle: 'Отключить команду',
       enableCommandTitle: 'Включить команду',
       empty: 'Команды не найдены',
+    },
+    membersManagement: {
+      title: 'Управление участниками',
+      subtitle: 'Ищите участников и быстро блокируйте или исключайте их с сервера',
+      searchPlaceholder: 'Поиск по нику...',
+      loading: 'Загружаем участников...',
+      empty: 'Участники не найдены',
+      noGuildId: 'Сервер не выбран',
+      loadError: 'Не удалось загрузить участников',
+      rolesLabel: 'Роли',
+      noRoles: 'Нет ролей',
+      banAction: 'Заблокировать',
+      kickAction: 'Исключить',
+      banSuccess: 'Пользователь {username} заблокирован',
+      kickSuccess: 'Пользователь {username} исключен',
+      actionError: 'Не удалось выполнить действие над участником',
     },
     notFound: {
       title: 'УПС! Страница не найдена',
