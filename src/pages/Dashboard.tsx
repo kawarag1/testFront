@@ -113,7 +113,7 @@ const Dashboard = () => {
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-bold truncate">{server.name}</p>
-                    <p className={`text-[10px] ${server.active ? 'text-white/70' : 'text-muted-foreground'}`}>{server.members} {t.dashboard.membersSuffix}</p>
+                    <p className={`text-[10px] ${server.active ? 'text-white/70' : 'text-muted-foreground'}`}>{server.members}</p>
                   </div>
                 </button>
               ))}
