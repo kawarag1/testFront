@@ -313,7 +313,10 @@ const Guilds: React.FC = () => {
                           <h3 className="font-semibold truncate">{guild.name}</h3>
                           {isChecking && <Loader2 className="h-4 w-4 animate-spin text-primary flex-shrink-0" />}
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">ID: {guild.id}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs text-muted-foreground truncate">ID:</p>
+                          <p className="text-xs text-muted-foreground truncate">{guild.id}</p>
+                        </div>
                       </div>
                     </div>
 
