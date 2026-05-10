@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Building2, Loader2, ShieldCheck, TriangleAlert, AlertCircle, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -155,6 +155,11 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
 const Guilds: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const tRef = useRef(t);
+
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -174,7 +179,7 @@ const Guilds: React.FC = () => {
         setMissingBotGuild(guild);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : t.guildsPage.checkStatusError;
+      const message = err instanceof Error ? err.message : tRef.current.guildsPage.checkStatusError;
       setError(message);
     } finally {
       setCheckingGuildId(null);
@@ -187,7 +192,7 @@ const Guilds: React.FC = () => {
         const parsedGuilds = await loadGuildsOnce();
         setGuilds(parsedGuilds);
       } catch (err) {
-        const message = err instanceof Error ? err.message : t.guildsPage.loadGuildsError;
+        const message = err instanceof Error ? err.message : tRef.current.guildsPage.loadGuildsError;
         setError(message);
       } finally {
         setLoading(false);
@@ -195,7 +200,7 @@ const Guilds: React.FC = () => {
     };
 
     loadGuilds();
-  }, [t.guildsPage.checkStatusError, t.guildsPage.loadGuildsError]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
