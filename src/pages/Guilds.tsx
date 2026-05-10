@@ -9,9 +9,9 @@ import { useI18n } from '../i18n';
 type Guild = {
   id: string;
   name: string;
-  icon?: string | null;
+  icon_url?: string | null;
   owner?: boolean;
-  members?: number;
+  approximate_member_count?: number;
 };
 
 type GuildsApiResponse = {
@@ -42,11 +42,11 @@ function toGuildArray(payload: unknown): Guild[] {
 }
 
 function guildIconUrl(guild: Guild): string | null {
-  if (!guild.icon) {
+  if (!guild.icon_url) {
     return null;
   }
 
-  return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`;
+  return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon_url}.png?size=128`;
 }
 
 async function loadGuildsOnce(): Promise<Guild[]> {
@@ -315,7 +315,7 @@ const Guilds: React.FC = () => {
 
                     <div className="mt-4 flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">
-                        {t.guildsPage.membersLabel}: {guild.members ?? '—'}
+                        {t.guildsPage.membersLabel}: {guild.approximate_member_count ?? '—'}
                       </span>
                       {guild.owner && (
                         <span className="inline-flex items-center gap-1 text-primary font-semibold">

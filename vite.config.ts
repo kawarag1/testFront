@@ -3,10 +3,16 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    exclude: ['react/jsx-dev-runtime'],
+  },
   server: {
     host: true,  // Разрешить доступ с любых сетевых интерфейсов
     port: 5173,   // Явно указываем порт
     strictPort: true, // Не использовать другой порт, если 5173 занят
+    watch: {
+      ignored: ['**/Dockerfile', '**/*.yml', '**/.git/**', '**/node_modules/**'],
+    },
     proxy: {
       '/api': {
         target: 'http://helper.nelocal.host',
