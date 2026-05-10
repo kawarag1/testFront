@@ -48,7 +48,7 @@ function toMemberArray(payload: unknown): GuildMember[] {
 }
 
 async function fetchMembers(guildId: string): Promise<GuildMember[]> {
-  const response = await fetch(apiUrl(`/api/v1/guilds/${guildId}/members`), {
+  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${guildId}/members`), {
     method: 'GET',
     credentials: 'include',
     headers: {
