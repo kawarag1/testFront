@@ -70,6 +70,11 @@ type KickPayload = {
   reason: string;
 };
 
+type BanPayload = {
+  delete_user_messages: boolean;
+  reason: string;
+};
+
 async function kickMember(guildId: string, userId: string, payload: KickPayload): Promise<void> {
   const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
     method: 'DELETE',
@@ -99,6 +104,35 @@ async function kickMember(guildId: string, userId: string, payload: KickPayload)
   }
 }
 
+async function banMember(guildId: string, userId: string, payload: BanPayload): Promise<void> {
+  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let backendMessage = '';
+
+    try {
+      const responsePayload = (await response.json()) as { detail?: unknown };
+      backendMessage = typeof responsePayload.detail === 'string' ? responsePayload.detail : '';
+    } catch {
+      backendMessage = '';
+    }
+
+    throw new Error(
+      backendMessage
+        ? `Failed to ban member: ${response.status} (${backendMessage})`
+        : `Failed to ban member: ${response.status}`,
+    );
+  }
+}
+
 const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildName }) => {
   const { t } = useI18n();
   const tRef = useRef(t);
@@ -106,6 +140,10 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<GuildMember[]>([]);
+  const [banModalMember, setBanModalMember] = useState<GuildMember | null>(null);
+  const [banReason, setBanReason] = useState('');
+  const [banDeleteUserMessages, setBanDeleteUserMessages] = useState(false);
+  const [isBanning, setIsBanning] = useState(false);
   const [kickModalMember, setKickModalMember] = useState<GuildMember | null>(null);
   const [kickReason, setKickReason] = useState('');
   const [isKicking, setIsKicking] = useState(false);
@@ -162,6 +200,12 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
     setKickReason('');
   };
 
+  const openBanModal = (member: GuildMember) => {
+    setBanModalMember(member);
+    setBanReason('');
+    setBanDeleteUserMessages(false);
+  };
+
   const closeKickModal = () => {
     if (isKicking) {
       return;
@@ -169,6 +213,45 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
 
     setKickModalMember(null);
     setKickReason('');
+  };
+
+  const closeBanModal = () => {
+    if (isBanning) {
+      return;
+    }
+
+    setBanModalMember(null);
+    setBanReason('');
+    setBanDeleteUserMessages(false);
+  };
+
+  const handleBanConfirm = async () => {
+    const trimmedReason = banReason.trim();
+
+    if (!banModalMember || trimmedReason.length === 0) {
+      return;
+    }
+
+    setIsBanning(true);
+
+    try {
+      await banMember(String(guildId), String(banModalMember.id), {
+        delete_user_messages: banDeleteUserMessages,
+        reason: trimmedReason,
+      });
+
+      setMembers((currentMembers) => currentMembers.filter((member) => member.id !== banModalMember.id));
+
+      toast.success(t.membersManagement.banSuccess.replace('{username}', banModalMember.username));
+      setBanModalMember(null);
+      setBanReason('');
+      setBanDeleteUserMessages(false);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : t.membersManagement.actionError;
+      toast.error(message);
+    } finally {
+      setIsBanning(false);
+    }
   };
 
   const handleKickConfirm = async () => {
@@ -267,6 +350,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                   <button
                     type="button"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/15 text-red-400"
+                    onClick={() => openBanModal(member)}
                   >
                     <Ban size={16} />
                     {t.membersManagement.banAction}
@@ -331,6 +415,59 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
               >
                 {isKicking ? <Loader2 size={16} className="animate-spin" /> : <UserX size={16} />}
                 {t.membersManagement.kickAction}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {banModalMember && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-card rounded-2xl border border-border shadow-lg max-w-md w-full p-6">
+            <h2 className="text-lg font-semibold mb-2">{t.membersManagement.banModalTitle}</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t.membersManagement.banModalDescription.replace('{username}', banModalMember.username)}
+            </p>
+
+            <label className="block text-sm font-medium mb-2" htmlFor="ban-reason-input">
+              {t.membersManagement.banReasonLabel}
+            </label>
+            <textarea
+              id="ban-reason-input"
+              rows={4}
+              value={banReason}
+              onChange={(e) => setBanReason(e.target.value)}
+              placeholder={t.membersManagement.banReasonPlaceholder}
+              className="w-full bg-secondary/50 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 outline-none transition-all text-sm mb-4 resize-none"
+            />
+
+            <label className="flex items-start gap-3 mb-5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={banDeleteUserMessages}
+                onChange={(e) => setBanDeleteUserMessages(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-border bg-secondary text-primary focus:ring-primary/50"
+              />
+              <span className="text-sm text-muted-foreground">{t.membersManagement.banDeleteMessagesLabel}</span>
+            </label>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeBanModal}
+                disabled={isBanning}
+                className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t.membersManagement.cancelAction}
+              </button>
+              <button
+                type="button"
+                onClick={handleBanConfirm}
+                disabled={isBanning || banReason.trim().length === 0}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {isBanning ? <Loader2 size={16} className="animate-spin" /> : <Ban size={16} />}
+                {t.membersManagement.banAction}
               </button>
             </div>
           </div>

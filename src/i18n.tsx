@@ -157,6 +157,11 @@ type Dictionary = {
     banAction: string;
     kickAction: string;
     cancelAction: string;
+    banModalTitle: string;
+    banModalDescription: string;
+    banReasonLabel: string;
+    banReasonPlaceholder: string;
+    banDeleteMessagesLabel: string;
     kickModalTitle: string;
     kickModalDescription: string;
     kickReasonLabel: string;
@@ -328,6 +333,11 @@ const dictionaries: Record<Language, Dictionary> = {
       banAction: 'Ban',
       kickAction: 'Kick',
       cancelAction: 'Cancel',
+      banModalTitle: 'Ban member',
+      banModalDescription: 'Are you sure you want to ban {username}?',
+      banReasonLabel: 'Reason',
+      banReasonPlaceholder: 'Enter reason for ban...',
+      banDeleteMessagesLabel: 'Delete user messages from the last 3 days?',
       kickModalTitle: 'Kick member',
       kickModalDescription: 'Are you sure you want to kick {username}?',
       kickReasonLabel: 'Reason',
@@ -497,6 +507,11 @@ const dictionaries: Record<Language, Dictionary> = {
       banAction: 'Заблокировать',
       kickAction: 'Исключить',
       cancelAction: 'Отмена',
+      banModalTitle: 'Блокировка участника',
+      banModalDescription: 'Вы уверены, что хотите заблокировать {username}?',
+      banReasonLabel: 'Причина блокировки',
+      banReasonPlaceholder: 'Введите причину блокировки...',
+      banDeleteMessagesLabel: 'Удалить сообщения пользователя за последние 3 дня?',
       kickModalTitle: 'Исключение участника',
       kickModalDescription: 'Вы уверены, что хотите исключить {username}?',
       kickReasonLabel: 'Причина исключения',
