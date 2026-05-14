@@ -349,7 +349,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                 <div className="flex items-center gap-2 md:gap-3">
                   <button
                     type="button"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/15 text-red-400"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/15 text-red-400 transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-500/25 hover:shadow-md active:translate-y-0"
                     onClick={() => openBanModal(member)}
                   >
                     <Ban size={16} />
@@ -358,7 +358,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
 
                   <button
                     type="button"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 text-amber-400"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 text-amber-400 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-500/25 hover:shadow-md active:translate-y-0"
                     onClick={() => openKickModal(member)}
                   >
                     <UserX size={16} />
@@ -403,7 +403,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                 type="button"
                 onClick={closeKickModal}
                 disabled={isKicking}
-                className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-lg border border-border transition-all duration-200 hover:-translate-y-0.5 hover:bg-muted hover:shadow-sm active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
               >
                 {t.membersManagement.cancelAction}
               </button>
@@ -411,7 +411,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                 type="button"
                 onClick={handleKickConfirm}
                 disabled={isKicking || kickReason.trim().length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:opacity-70 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/15 text-amber-400 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-500/25 hover:shadow-sm active:translate-y-0 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
               >
                 {isKicking ? <Loader2 size={16} className="animate-spin" /> : <UserX size={16} />}
                 {t.membersManagement.kickAction}
@@ -456,7 +456,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                 type="button"
                 onClick={closeBanModal}
                 disabled={isBanning}
-                className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-lg border border-border transition-all duration-200 hover:-translate-y-0.5 hover:bg-muted hover:shadow-sm active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
               >
                 {t.membersManagement.cancelAction}
               </button>
@@ -464,7 +464,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                 type="button"
                 onClick={handleBanConfirm}
                 disabled={isBanning || banReason.trim().length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:opacity-70 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/15 text-red-400 transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-500/25 hover:shadow-sm active:translate-y-0 disabled:bg-muted disabled:text-muted-foreground disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
               >
                 {isBanning ? <Loader2 size={16} className="animate-spin" /> : <Ban size={16} />}
                 {t.membersManagement.banAction}
