@@ -172,7 +172,9 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
   };
 
   const handleKickConfirm = async () => {
-    if (!kickModalMember) {
+    const trimmedReason = kickReason.trim();
+
+    if (!kickModalMember || trimmedReason.length === 0) {
       return;
     }
 
@@ -181,7 +183,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
     try {
       await kickMember(String(guildId), String(kickModalMember.id), {
         delete_user_messages: false,
-        reason: kickReason,
+        reason: trimmedReason,
       });
 
       setMembers((currentMembers) => currentMembers.filter((member) => member.id !== kickModalMember.id));
@@ -324,8 +326,8 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
               <button
                 type="button"
                 onClick={handleKickConfirm}
-                disabled={isKicking}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isKicking || kickReason.trim().length === 0}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isKicking ? <Loader2 size={16} className="animate-spin" /> : <UserX size={16} />}
                 {t.membersManagement.kickAction}
