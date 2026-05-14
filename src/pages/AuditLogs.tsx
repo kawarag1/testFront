@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Activity, Loader2, Search } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../config/api';
@@ -108,11 +108,16 @@ async function fetchAuditLogs(guildId: string): Promise<ActionSchema[]> {
 }
 
 const AuditLogs: React.FC<AuditLogsProps> = ({ guildId, guildName }) => {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const tRef = useRef(t);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actions, setActions] = useState<ActionSchema[]>([]);
+
+  useEffect(() => {
+    tRef.current = t;
+  }, [t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -121,7 +126,7 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ guildId, guildName }) => {
       if (!guildId) {
         setActions([]);
         setLoading(false);
-        setError(t.auditLogs.noGuildId);
+        setError(tRef.current.auditLogs.noGuildId);
         return;
       }
 
@@ -134,7 +139,7 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ guildId, guildName }) => {
           setActions(nextActions);
         }
       } catch (e) {
-        const message = e instanceof Error ? e.message : t.auditLogs.loadError;
+        const message = e instanceof Error ? e.message : tRef.current.auditLogs.loadError;
         if (!cancelled) {
           setError(message);
         }
@@ -150,7 +155,7 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ guildId, guildName }) => {
     return () => {
       cancelled = true;
     };
-  }, [guildId, t.auditLogs.loadError, t.auditLogs.noGuildId]);
+  }, [guildId]);
 
   const filteredActions = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -183,10 +188,19 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ guildId, guildName }) => {
       return value;
     }
 
-    return new Intl.DateTimeFormat(undefined, {
-      dateStyle: 'medium',
-      timeStyle: 'short',
+    const locale = language === 'ru' ? 'ru-RU' : 'en-US';
+
+    const timePart = new Intl.DateTimeFormat(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
     }).format(parsedDate);
+
+    const datePart = new Intl.DateTimeFormat(locale, {
+      dateStyle: 'medium',
+    }).format(parsedDate);
+
+    return `${timePart}, ${datePart}`;
   };
 
   return (
