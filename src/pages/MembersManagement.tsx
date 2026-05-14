@@ -71,12 +71,7 @@ type KickPayload = {
 };
 
 async function kickMember(guildId: string, userId: string, payload: KickPayload): Promise<void> {
-  const searchParams = new URLSearchParams({
-    guild_id: String(guildId),
-    user_id: String(userId),
-  });
-
-  const response = await fetch(apiUrl(`/v1/guilds/guilds/members?${searchParams.toString()}`), {
+  const response = await fetch(apiUrl(`/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
     method: 'DELETE',
     credentials: 'include',
     headers: {
