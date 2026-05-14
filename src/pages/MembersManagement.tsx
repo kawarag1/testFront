@@ -446,7 +446,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                 type="checkbox"
                 checked={banDeleteUserMessages}
                 onChange={(e) => setBanDeleteUserMessages(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-border bg-secondary text-primary focus:ring-primary/50"
+                className="mt-1 h-4 w-4 rounded border-border bg-secondary accent-primary focus:ring-primary/50"
               />
               <span className="text-sm text-muted-foreground">{t.membersManagement.banDeleteMessagesLabel}</span>
             </label>
