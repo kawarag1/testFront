@@ -170,6 +170,23 @@ type Dictionary = {
     kickSuccess: string;
     actionError: string;
   };
+  auditLogs: {
+    title: string;
+    subtitle: string;
+    searchPlaceholder: string;
+    loading: string;
+    empty: string;
+    noGuildId: string;
+    loadError: string;
+    actorLabel: string;
+    targetLabel: string;
+    reasonLabel: string;
+    detailsLabel: string;
+    dateLabel: string;
+    unknownUser: string;
+    noReason: string;
+    noDetails: string;
+  };
   notFound: {
     title: string;
     description: string;
@@ -346,6 +363,23 @@ const dictionaries: Record<Language, Dictionary> = {
       kickSuccess: 'User {username} has been kicked',
       actionError: 'Failed to execute member action',
     },
+    auditLogs: {
+      title: 'Audit logs',
+      subtitle: 'Track moderation and bot actions performed on this server',
+      searchPlaceholder: 'Search by action, user or reason...',
+      loading: 'Loading audit logs...',
+      empty: 'No events found',
+      noGuildId: 'Guild is not selected',
+      loadError: 'Failed to load audit logs',
+      actorLabel: 'Actor',
+      targetLabel: 'Target',
+      reasonLabel: 'Reason',
+      detailsLabel: 'Details',
+      dateLabel: 'Date',
+      unknownUser: 'Unknown user',
+      noReason: 'No reason',
+      noDetails: 'No details',
+    },
     notFound: {
       title: 'OOPS! Page Not Found',
       description: 'We can\'t seem to find the page you are looking for!',
@@ -519,6 +553,23 @@ const dictionaries: Record<Language, Dictionary> = {
       banSuccess: 'Пользователь {username} заблокирован',
       kickSuccess: 'Пользователь {username} исключен',
       actionError: 'Не удалось выполнить действие над участником',
+    },
+    auditLogs: {
+      title: 'Журнал аудита',
+      subtitle: 'Отслеживайте действия модерации и бота на этом сервере',
+      searchPlaceholder: 'Поиск по действию, пользователю или причине...',
+      loading: 'Загружаем журнал аудита...',
+      empty: 'События не найдены',
+      noGuildId: 'Сервер не выбран',
+      loadError: 'Не удалось загрузить журнал аудита',
+      actorLabel: 'Кто выполнил',
+      targetLabel: 'Цель',
+      reasonLabel: 'Причина',
+      detailsLabel: 'Детали',
+      dateLabel: 'Дата',
+      unknownUser: 'Неизвестный пользователь',
+      noReason: 'Причина не указана',
+      noDetails: 'Детали отсутствуют',
     },
     notFound: {
       title: 'УПС! Страница не найдена',

@@ -15,6 +15,7 @@ import {
 import Navbar from '../components/Navbar';
 import CommandsManagement from './CommandsManagement.tsx';
 import MembersManagement from './MembersManagement.tsx';
+import AuditLogs from './AuditLogs.tsx';
 import { useI18n } from '../i18n';
 
 type Guild = {
@@ -196,6 +197,9 @@ const Dashboard = () => {
           )}
           {activeTab === 'members' && (
             <MembersManagement guildId={guildId || ''} guildName={activeGuildName} />
+          )}
+          {activeTab === 'logs' && (
+            <AuditLogs guildId={guildId || ''} guildName={activeGuildName} />
           )}
         </main>
       </div>
