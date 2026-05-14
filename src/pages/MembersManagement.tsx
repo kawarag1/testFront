@@ -49,7 +49,7 @@ function toMemberArray(payload: unknown): GuildMember[] {
 }
 
 async function fetchMembers(guildId: string): Promise<GuildMember[]> {
-  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${guildId}/members`), {
+  const response = await fetch(apiUrl(`/api/v1/guilds/${guildId}/members`), {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -76,7 +76,7 @@ type BanPayload = {
 };
 
 async function kickMember(guildId: string, userId: string, payload: KickPayload): Promise<void> {
-  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
+  const response = await fetch(apiUrl(`/api/v1/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
     method: 'DELETE',
     credentials: 'include',
     headers: {
@@ -105,7 +105,7 @@ async function kickMember(guildId: string, userId: string, payload: KickPayload)
 }
 
 async function banMember(guildId: string, userId: string, payload: BanPayload): Promise<void> {
-  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/bans/${encodeURIComponent(String(userId))}`), {
+  const response = await fetch(apiUrl(`/api/v1/guilds/${encodeURIComponent(String(guildId))}/bans/${encodeURIComponent(String(userId))}`), {
     method: 'PUT',
     credentials: 'include',
     headers: {

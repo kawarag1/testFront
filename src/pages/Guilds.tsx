@@ -91,7 +91,7 @@ async function loadGuildsOnce(): Promise<Guild[]> {
 
 async function checkBotOnGuild(guildId: string): Promise<boolean> {
   try {
-    const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${guildId}`), {
+    const response = await fetch(apiUrl(`/api/v1/guilds/${guildId}`), {
       method: 'GET',
       credentials: 'include',
       headers: {
