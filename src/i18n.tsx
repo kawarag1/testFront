@@ -156,6 +156,11 @@ type Dictionary = {
     noRoles: string;
     banAction: string;
     kickAction: string;
+    cancelAction: string;
+    kickModalTitle: string;
+    kickModalDescription: string;
+    kickReasonLabel: string;
+    kickReasonPlaceholder: string;
     banSuccess: string;
     kickSuccess: string;
     actionError: string;
@@ -322,6 +327,11 @@ const dictionaries: Record<Language, Dictionary> = {
       noRoles: 'No roles',
       banAction: 'Ban',
       kickAction: 'Kick',
+      cancelAction: 'Cancel',
+      kickModalTitle: 'Kick member',
+      kickModalDescription: 'Are you sure you want to kick {username}?',
+      kickReasonLabel: 'Reason',
+      kickReasonPlaceholder: 'Enter reason for kick...',
       banSuccess: 'User {username} has been banned',
       kickSuccess: 'User {username} has been kicked',
       actionError: 'Failed to execute member action',
@@ -486,6 +496,11 @@ const dictionaries: Record<Language, Dictionary> = {
       noRoles: 'Нет ролей',
       banAction: 'Заблокировать',
       kickAction: 'Исключить',
+      cancelAction: 'Отмена',
+      kickModalTitle: 'Исключение участника',
+      kickModalDescription: 'Вы уверены, что хотите исключить {username}?',
+      kickReasonLabel: 'Причина исключения',
+      kickReasonPlaceholder: 'Введите причину исключения...',
       banSuccess: 'Пользователь {username} заблокирован',
       kickSuccess: 'Пользователь {username} исключен',
       actionError: 'Не удалось выполнить действие над участником',

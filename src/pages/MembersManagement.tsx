@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Search, Users, Loader2, Ban, UserX } from 'lucide-react';
+import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../config/api';
 
@@ -64,7 +65,39 @@ async function fetchMembers(guildId: string): Promise<GuildMember[]> {
   return toMemberArray(payload);
 }
 
-type MemberAction = 'ban' | 'kick';
+type KickPayload = {
+  delete_user_messages: boolean;
+  reason: string;
+};
+
+async function kickMember(guildId: string, userId: string, payload: KickPayload): Promise<void> {
+  const response = await fetch(apiUrl(`/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let backendMessage = '';
+
+    try {
+      const responsePayload = (await response.json()) as { detail?: unknown };
+      backendMessage = typeof responsePayload.detail === 'string' ? responsePayload.detail : '';
+    } catch {
+      backendMessage = '';
+    }
+
+    throw new Error(
+      backendMessage
+        ? `Failed to kick member: ${response.status} (${backendMessage})`
+        : `Failed to kick member: ${response.status}`,
+    );
+  }
+}
 
 const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildName }) => {
   const { t } = useI18n();
@@ -73,6 +106,9 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [members, setMembers] = useState<GuildMember[]>([]);
+  const [kickModalMember, setKickModalMember] = useState<GuildMember | null>(null);
+  const [kickReason, setKickReason] = useState('');
+  const [isKicking, setIsKicking] = useState(false);
 
   useEffect(() => {
     tRef.current = t;
@@ -120,6 +156,46 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
     () => members.filter((member) => member.username.toLowerCase().includes(search.toLowerCase())),
     [members, search],
   );
+
+  const openKickModal = (member: GuildMember) => {
+    setKickModalMember(member);
+    setKickReason('');
+  };
+
+  const closeKickModal = () => {
+    if (isKicking) {
+      return;
+    }
+
+    setKickModalMember(null);
+    setKickReason('');
+  };
+
+  const handleKickConfirm = async () => {
+    if (!kickModalMember) {
+      return;
+    }
+
+    setIsKicking(true);
+
+    try {
+      await kickMember(String(guildId), String(kickModalMember.id), {
+        delete_user_messages: false,
+        reason: kickReason,
+      });
+
+      setMembers((currentMembers) => currentMembers.filter((member) => member.id !== kickModalMember.id));
+
+      toast.success(t.membersManagement.kickSuccess.replace('{username}', kickModalMember.username));
+      setKickModalMember(null);
+      setKickReason('');
+    } catch (e) {
+      const message = e instanceof Error ? e.message : t.membersManagement.actionError;
+      toast.error(message);
+    } finally {
+      setIsKicking(false);
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -197,6 +273,7 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
                   <button
                     type="button"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 text-amber-400"
+                    onClick={() => openKickModal(member)}
                   >
                     <UserX size={16} />
                     {t.membersManagement.kickAction}
@@ -212,6 +289,49 @@ const MembersManagement: React.FC<MembersManagementProps> = ({ guildId, guildNam
               <p className="text-muted-foreground text-lg">{t.membersManagement.empty}</p>
             </div>
           )}
+        </div>
+      )}
+
+      {kickModalMember && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-card rounded-2xl border border-border shadow-lg max-w-md w-full p-6">
+            <h2 className="text-lg font-semibold mb-2">{t.membersManagement.kickModalTitle}</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t.membersManagement.kickModalDescription.replace('{username}', kickModalMember.username)}
+            </p>
+
+            <label className="block text-sm font-medium mb-2" htmlFor="kick-reason-input">
+              {t.membersManagement.kickReasonLabel}
+            </label>
+            <textarea
+              id="kick-reason-input"
+              rows={4}
+              value={kickReason}
+              onChange={(e) => setKickReason(e.target.value)}
+              placeholder={t.membersManagement.kickReasonPlaceholder}
+              className="w-full bg-secondary/50 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 outline-none transition-all text-sm mb-5 resize-none"
+            />
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeKickModal}
+                disabled={isKicking}
+                className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t.membersManagement.cancelAction}
+              </button>
+              <button
+                type="button"
+                onClick={handleKickConfirm}
+                disabled={isKicking}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isKicking ? <Loader2 size={16} className="animate-spin" /> : <UserX size={16} />}
+                {t.membersManagement.kickAction}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
