@@ -105,7 +105,7 @@ async function kickMember(guildId: string, userId: string, payload: KickPayload)
 }
 
 async function banMember(guildId: string, userId: string, payload: BanPayload): Promise<void> {
-  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
+  const response = await fetch(apiUrl(`/api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/bans/${encodeURIComponent(String(userId))}`), {
     method: 'PUT',
     credentials: 'include',
     headers: {
