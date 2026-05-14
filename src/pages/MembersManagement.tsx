@@ -71,7 +71,7 @@ type KickPayload = {
 };
 
 async function kickMember(guildId: string, userId: string, payload: KickPayload): Promise<void> {
-  const response = await fetch(apiUrl(`/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
+  const response = await fetch(apiUrl(`api/v1/guilds/guilds/${encodeURIComponent(String(guildId))}/members/${encodeURIComponent(String(userId))}`), {
     method: 'DELETE',
     credentials: 'include',
     headers: {
