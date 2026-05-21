@@ -83,7 +83,10 @@ const Callback: React.FC = () => {
           throw new Error(t.callbackPage.emptyResponse);
         }
 
-        setTimeout(() => navigate('/guilds', { replace: true }), 1500);
+        const returnGuildId = urlParams.get('state');
+        const targetPath = returnGuildId ? `/dashboard/${returnGuildId}` : '/guilds';
+
+        setTimeout(() => navigate(targetPath, { replace: true }), 1500);
       } catch (err) {
         console.error('Авторизация: исключение в handleCallback', err);
         const message = err instanceof Error ? err.message : t.callbackPage.authErrorTitle;

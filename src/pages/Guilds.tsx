@@ -45,6 +45,20 @@ function guildIconUrl(guild: Guild): string | null {
   return guild.icon_url || null;
 }
 
+function buildBotInviteUrl(guildId: string): string {
+  const params = new URLSearchParams({
+    client_id: '1403029892387569766',
+    redirect_uri: `${window.location.origin}/callback`,
+    response_type: 'code',
+    scope: 'bot',
+    permissions: '8',
+    guild_id: guildId,
+    state: guildId,
+  });
+
+  return `https://discord.com/oauth2/authorize?${params.toString()}`;
+}
+
 function pluralizeMembers(count: number | undefined, singular: string, plural2: string, plural5: string): string {
   if (count === undefined || count === null) return '—';
   
@@ -234,7 +248,10 @@ const Guilds: React.FC = () => {
                 {t.guildsPage.cancel}
               </button>
               <a
-                href={`https://discord.com/oauth2/authorize?client_id=1403029892387569766&scope=bot&permissions=8&guild_id=${missingBotGuild.id}`}
+                href={buildBotInviteUrl(missingBotGuild.id)}
+                onClick={() => {
+                  window.localStorage.setItem('selectedGuild', JSON.stringify(missingBotGuild));
+                }}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold text-center flex items-center justify-center gap-2"
