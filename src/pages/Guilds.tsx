@@ -252,8 +252,6 @@ const Guilds: React.FC = () => {
                 onClick={() => {
                   window.localStorage.setItem('selectedGuild', JSON.stringify(missingBotGuild));
                 }}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="flex-1 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold text-center flex items-center justify-center gap-2"
               >
                 <Check className="h-4 w-4" />
