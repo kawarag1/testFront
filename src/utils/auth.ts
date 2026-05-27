@@ -81,7 +81,9 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   cachedSessionPromise = fetch(apiUrl('/api/v1/auth/me'), {
     method: 'GET',
     credentials: 'include',
-    headers: getAuthHeaders(),
+    headers: {
+      Accept: 'application/json',
+    },
   })
     .then(async (response) => {
       if (!response.ok) {
@@ -112,7 +114,9 @@ export async function logoutSession(): Promise<void> {
   await fetch(apiUrl('/api/v1/auth/logout'), {
     method: 'POST',
     credentials: 'include',
-    headers: getAuthHeaders(),
+    headers: {
+      Accept: 'application/json',
+    },
   }).catch(() => {
     // Ignore network errors here; the caller will handle UI state.
   });
