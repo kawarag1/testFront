@@ -14,6 +14,28 @@ type SessionResponse = SessionUser | { user?: SessionUser; owner?: SessionUser }
 let cachedSessionUser: SessionUser | null | undefined;
 let cachedSessionPromise: Promise<SessionUser | null> | null = null;
 
+function getAccessTokenFromCookie(): string | null {
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'access_token') {
+      return decodeURIComponent(value);
+    }
+  }
+  return null;
+}
+
+export function getAuthHeaders(): HeadersInit {
+  const token = getAccessTokenFromCookie();
+  const headers: HeadersInit = {
+    Accept: 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 function normalizeSessionUser(payload: SessionResponse): SessionUser | null {
   if (!payload) {
     return null;
@@ -59,9 +81,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   cachedSessionPromise = fetch(apiUrl('/api/v1/auth/me'), {
     method: 'GET',
     credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-    },
+    headers: getAuthHeaders(),
   })
     .then(async (response) => {
       if (!response.ok) {
@@ -92,9 +112,7 @@ export async function logoutSession(): Promise<void> {
   await fetch(apiUrl('/api/v1/auth/logout'), {
     method: 'POST',
     credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-    },
+    headers: getAuthHeaders(),
   }).catch(() => {
     // Ignore network errors here; the caller will handle UI state.
   });

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Activity, Loader2, Search } from 'lucide-react';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../config/api';
+import { getAuthHeaders } from '../utils/auth';
 
 interface AuditLogsProps {
   guildId: string;
@@ -94,9 +95,7 @@ async function fetchAuditLogs(guildId: string): Promise<ActionSchema[]> {
   const response = await fetch(apiUrl(`/api/v1/actions/${encodeURIComponent(String(guildId))}`), {
     method: 'GET',
     credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {

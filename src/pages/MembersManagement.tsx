@@ -3,6 +3,7 @@ import { Search, Users, Loader2, Ban, UserX } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
 import { apiUrl } from '../config/api';
+import { getAuthHeaders } from '../utils/auth';
 
 interface MembersManagementProps {
   guildId: string;
@@ -52,9 +53,7 @@ async function fetchMembers(guildId: string): Promise<GuildMember[]> {
   const response = await fetch(apiUrl(`/api/v1/guilds/${guildId}/members`), {
     method: 'GET',
     credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-    },
+    headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -80,8 +79,8 @@ async function kickMember(guildId: string, userId: string, payload: KickPayload)
     method: 'DELETE',
     credentials: 'include',
     headers: {
+      ...getAuthHeaders(),
       'Content-Type': 'application/json',
-      Accept: 'application/json',
     },
     body: JSON.stringify(payload),
   });
@@ -109,8 +108,8 @@ async function banMember(guildId: string, userId: string, payload: BanPayload): 
     method: 'PUT',
     credentials: 'include',
     headers: {
+      ...getAuthHeaders(),
       'Content-Type': 'application/json',
-      Accept: 'application/json',
     },
     body: JSON.stringify(payload),
   });

@@ -3,6 +3,7 @@ import { Building2, Loader2, ShieldCheck, TriangleAlert, AlertCircle, Check, X }
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { apiUrl } from '../config/api';
+import { getAuthHeaders } from '../utils/auth';
 import { toast } from 'react-toastify';
 import { useI18n } from '../i18n';
 
@@ -80,9 +81,7 @@ async function loadGuildsOnce(): Promise<Guild[]> {
   guildsRequestPromise = fetch(apiUrl('/api/v1/guilds/guilds'), {
     method: 'GET',
     credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-    },
+    headers: getAuthHeaders(),
   })
     .then(async (response) => {
       if (!response.ok) {
@@ -108,9 +107,7 @@ async function checkBotOnGuild(guildId: string): Promise<boolean> {
     const response = await fetch(apiUrl(`/api/v1/guilds/${guildId}`), {
       method: 'GET',
       credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-      },
+      headers: getAuthHeaders(),
     });
 
     const status = response.status;
