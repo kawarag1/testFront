@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import {
@@ -17,6 +17,7 @@ import CommandsManagement from './CommandsManagement.tsx';
 import MembersManagement from './MembersManagement.tsx';
 import AuditLogs from './AuditLogs.tsx';
 import { useI18n } from '../i18n';
+import { getAuthHeaders } from '../utils/auth';
 
 type Guild = {
   id: string;
@@ -29,6 +30,30 @@ type Guild = {
 type DashboardLocationState = {
   guild?: Guild;
 };
+
+type WelcomeMessageResponse =
+  | string
+  | {
+      welcome_message?: unknown;
+      welcomeMessage?: unknown;
+      message?: unknown;
+      data?: unknown;
+    };
+
+function parseWelcomeMessage(payload: unknown): string {
+  if (typeof payload === 'string') {
+    return payload;
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    return '';
+  }
+
+  const response = payload as WelcomeMessageResponse & Record<string, unknown>;
+  const candidate = response.welcome_message ?? response.welcomeMessage ?? response.message ?? response.data;
+
+  return typeof candidate === 'string' ? candidate : '';
+}
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('general');
@@ -73,6 +98,46 @@ const Dashboard = () => {
 
   const activeGuildName = selectedGuild?.name || guildId || t.dashboard.unknownGuild;
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadWelcomeMessage = async () => {
+      const id = guildId || selectedGuild?.id;
+
+      if (!id) {
+        setWelcomeText('');
+        return;
+      }
+
+      try {
+        const response = await fetch(apiUrl(`/v1/guilds/${encodeURIComponent(String(id))}/welcome-message`), {
+          method: 'GET',
+          credentials: 'include',
+          headers: getAuthHeaders(),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to load welcome message: ${response.status}`);
+        }
+
+        const payload = (await response.json()) as unknown;
+        const nextWelcomeText = parseWelcomeMessage(payload);
+
+        if (!cancelled) {
+          setWelcomeText(nextWelcomeText);
+        }
+      } catch (error) {
+        console.error('Error loading welcome message:', error);
+      }
+    };
+
+    loadWelcomeMessage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [guildId, selectedGuild?.id]);
+
   const servers = [
     {
       id: selectedGuild?.id || guildId || 'selected',
@@ -99,9 +164,13 @@ const Dashboard = () => {
 
     setSaving(true);
     try {
-      const res = await fetch(apiUrl(`/v1/guilds/${id}/welcome-message`), {
+      const res = await fetch(apiUrl(`/v1/guilds/${encodeURIComponent(String(id))}/welcome-message`), {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: {
+          ...getAuthHeaders(),
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ welcome_message: welcomeText }),
       });
 
