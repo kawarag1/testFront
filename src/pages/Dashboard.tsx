@@ -32,6 +32,7 @@ type DashboardLocationState = {
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('general');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [welcomeText, setWelcomeText] = useState('');
   const { guildId } = useParams();
   const location = useLocation();
   const { t } = useI18n();
@@ -199,12 +200,18 @@ const Dashboard = () => {
                   <h3 className="font-bold mb-6">{t.dashboard.welcomeMessage}</h3>
                   <textarea
                     rows={4}
+                    value={welcomeText}
+                    onChange={(e) => setWelcomeText(e.target.value)}
                     placeholder={t.dashboard.welcomePlaceholder}
                     className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
                   />
                   <div className="flex flex-wrap gap-2">
                     {['{user}', '{server}', '{member_count}', '{owner}'].map(tag => (
-                      <button key={tag} className="px-3 py-1 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all text-xs font-mono">
+                      <button
+                        key={tag}
+                        onClick={() => setWelcomeText(prev => prev ? `${prev} ${tag}` : tag)}
+                        className="px-3 py-1 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all text-xs font-mono"
+                      >
                         {tag}
                       </button>
                     ))}
