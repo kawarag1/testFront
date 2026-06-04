@@ -16,17 +16,14 @@ let cachedSessionPromise: Promise<SessionUser | null> | null = null;
 
 function getAccessTokenFromCookie(): string | null {
   const cookies = document.cookie.split(';');
-  console.log('[Auth] All cookies:', cookies);
-  
+
   for (const cookie of cookies) {
     const [name, value] = cookie.trim().split('=');
     if (name === 'access_token') {
-      console.log('[Auth] Found access_token:', value.substring(0, 20) + '...');
       return decodeURIComponent(value);
     }
   }
-  
-  console.log('[Auth] access_token not found in cookies');
+
   return null;
 }
 
@@ -37,9 +34,6 @@ export function getAuthHeaders(): HeadersInit {
   };
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
-    console.log('[Auth] Authorization header set with Bearer token');
-  } else {
-    console.log('[Auth] No token found, Authorization header not set');
   }
   return headers;
 }
@@ -68,6 +62,28 @@ function normalizeSessionUser(payload: SessionResponse): SessionUser | null {
   return payload as SessionUser;
 }
 
+async function refreshAuthSession(): Promise<boolean> {
+  const response = await fetch(apiUrl('/api/v1/auth/refresh'), {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).catch((error) => {
+    return null;
+  });
+
+  if (!response) {
+    return false;
+  }
+
+  if (!response.ok) {
+    return false;
+  }
+
+  return true;
+}
+
 export function getCachedSessionUser(): SessionUser | null | undefined {
   return cachedSessionUser;
 }
@@ -92,20 +108,39 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     headers: getAuthHeaders(),
   })
     .then(async (response) => {
-      console.log('[Auth] /v1/auth/me response status:', response.status);
+      if (response.status === 401) {
+        const refreshed = await refreshAuthSession();
+        if (!refreshed) {
+          cachedSessionUser = null;
+          return null;
+        }
+
+        const retryResponse = await fetch(apiUrl('/api/v1/auth/me'), {
+          method: 'GET',
+          credentials: 'include',
+          headers: getAuthHeaders(),
+        });
+
+        if (!retryResponse.ok) {
+          cachedSessionUser = null;
+          return null;
+        }
+
+        const retryPayload = (await retryResponse.json()) as SessionResponse;
+        cachedSessionUser = normalizeSessionUser(retryPayload);
+        return cachedSessionUser;
+      }
+
       if (!response.ok) {
-        console.error('[Auth] Authentication failed with status', response.status);
         cachedSessionUser = null;
         return null;
       }
 
       const payload = (await response.json()) as SessionResponse;
       cachedSessionUser = normalizeSessionUser(payload);
-      console.log('[Auth] Session user loaded:', cachedSessionUser?.username || 'unknown');
       return cachedSessionUser;
     })
     .catch((error) => {
-      console.error('[Auth] Fetch error:', error);
       cachedSessionUser = null;
       return null;
     })
