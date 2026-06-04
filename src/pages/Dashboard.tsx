@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
-import { 
+import {
   LayoutDashboard, 
-  Music, 
   Settings, 
   Users, 
   ChevronRight,
@@ -82,7 +81,6 @@ const Dashboard = () => {
 
   const menuItems = [
     { id: 'general', name: t.dashboard.menuGeneral, icon: Settings },
-    { id: 'music', name: t.dashboard.menuMusic, icon: Music },
     { id: 'members', name: t.dashboard.menuMembers, icon: Users },
     { id: 'logs', name: t.dashboard.menuLogs, icon: Activity },
     { id: 'commands', name: t.dashboard.commands, icon: Terminal },
@@ -202,22 +200,6 @@ const Dashboard = () => {
                   <textarea
                     rows={4}
                     placeholder={t.dashboard.welcomePlaceholder}
-                    className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    {['{user}', '{server}', '{member_count}', '{owner}'].map(tag => (
-                      <button key={tag} className="px-3 py-1 rounded-lg bg-secondary hover:bg-primary/10 hover:text-primary transition-all text-xs font-mono">
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="md:col-span-2 p-8 rounded-3xl bg-card border border-border shadow-sm">
-                  <h3 className="font-bold mb-6">{t.dashboard.farewellMessage}</h3>
-                  <textarea
-                    rows={4}
-                    placeholder={t.dashboard.farewellPlaceholder}
                     className="w-full bg-secondary/50 border border-border rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary/50 outline-none resize-none mb-4"
                   />
                   <div className="flex flex-wrap gap-2">
