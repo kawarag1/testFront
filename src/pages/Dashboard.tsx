@@ -12,6 +12,7 @@ import {
   Terminal
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
+import { apiUrl } from '../config/api';
 import CommandsManagement from './CommandsManagement.tsx';
 import MembersManagement from './MembersManagement.tsx';
 import AuditLogs from './AuditLogs.tsx';
@@ -54,6 +55,8 @@ const Dashboard = () => {
 
   let selectedGuild: Guild | null = locationState?.guild ?? null;
 
+  const [saving, setSaving] = useState(false);
+
   if (!selectedGuild) {
     const storedGuild = window.localStorage.getItem('selectedGuild');
     if (storedGuild) {
@@ -86,6 +89,35 @@ const Dashboard = () => {
     { id: 'logs', name: t.dashboard.menuLogs, icon: Activity },
     { id: 'commands', name: t.dashboard.commands, icon: Terminal },
   ];
+
+  const saveWelcomeMessage = async () => {
+    const id = guildId || selectedGuild?.id;
+    if (!id) {
+      alert('Guild id not found');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await fetch(apiUrl(`/v1/guilds/${id}/welcome-message`), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ welcome_message: welcomeText }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => res.statusText);
+        throw new Error(text || 'Request failed');
+      }
+
+      alert('Saved');
+    } catch (err) {
+      console.error(err);
+      alert('Save failed');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -190,8 +222,12 @@ const Dashboard = () => {
                   <h1 className="text-3xl font-bold font-serif mb-2">{t.dashboard.generalSettings}: {activeGuildName}</h1>
                   <p className="text-muted-foreground">{t.dashboard.configureBasic}</p>
                 </div>
-                <button className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
-                  {t.dashboard.saveChanges}
+                <button
+                  onClick={saveWelcomeMessage}
+                  disabled={saving}
+                  className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : t.dashboard.saveChanges}
                 </button>
               </header>
 
