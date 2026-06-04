@@ -13,8 +13,6 @@ const Commands = () => {
   const commands = [
     { id: 'ban', name: '/ban', category: 'mod', desc: t.commandsPage.banDesc, usage: '/ban [user] [reason]', permissions: t.commandsPage.banMembers },
     { id: 'kick', name: '/kick', category: 'mod', desc: t.commandsPage.kickDesc, usage: '/kick [user] [reason]', permissions: t.commandsPage.kickMembers },
-    { id: 'play', name: '/play', category: 'music', desc: t.commandsPage.playDesc, usage: '/play [query/url]', permissions: t.commandsPage.none },
-    { id: 'skip', name: '/skip', category: 'music', desc: t.commandsPage.skipDesc, usage: '/skip', permissions: t.commandsPage.none },
     { id: 'help', name: '/help', category: 'info', desc: t.commandsPage.helpDesc, usage: '/help [command]', permissions: t.commandsPage.none },
     { id: 'ping', name: '/ping', category: 'util', desc: t.commandsPage.pingDesc, usage: '/ping', permissions: t.commandsPage.none },
     { id: 'about', name: '/about', category: 'info', desc: t.commandsPage.aboutDesc, usage: '/about', permissions: t.commandsPage.none },

@@ -34,8 +34,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
     () => [
       { id: 'ban', name: '/ban', desc: t.commandsPage.banDesc },
       { id: 'kick', name: '/kick', desc: t.commandsPage.kickDesc },
-      { id: 'play', name: '/play', desc: t.commandsPage.playDesc },
-      { id: 'skip', name: '/skip', desc: t.commandsPage.skipDesc },
       { id: 'help', name: '/help', desc: t.commandsPage.helpDesc },
       { id: 'about', name: '/about', desc: t.commandsPage.aboutDesc },
       { id: 'clear', name: '/clear', desc: t.commandsPage.clearDesc },
@@ -44,8 +42,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
     [
       t.commandsPage.banDesc,
       t.commandsPage.kickDesc,
-      t.commandsPage.playDesc,
-      t.commandsPage.skipDesc,
       t.commandsPage.helpDesc,
       t.commandsPage.aboutDesc,
       t.commandsPage.clearDesc,
