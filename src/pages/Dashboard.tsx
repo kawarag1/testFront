@@ -32,6 +32,7 @@ type DashboardLocationState = {
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('general');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { guildId } = useParams();
   const location = useLocation();
   const { t } = useI18n();
@@ -143,8 +144,46 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        
+        {/* Mobile Menu Toggle */}
+        <motion.div 
+          className="lg:hidden fixed top-24 left-6 right-6 z-40 bg-secondary/95 backdrop-blur-md rounded-xl border border-border shadow-lg"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: mobileMenuOpen ? 1 : 0, y: mobileMenuOpen ? 0 : -10, pointerEvents: mobileMenuOpen ? 'auto' : 'none' }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="p-4 space-y-2">
+            {menuItems.map(item => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all text-sm font-medium ${activeTab === item.id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-secondary'}`}
+              >
+                <item.icon size={18} />
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
         <main className="flex-1 p-6 md:p-12 overflow-y-auto">
+          {/* Mobile Section Selector */}
+          <div className="lg:hidden mb-6">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-full flex items-center justify-between p-3 bg-secondary border border-border rounded-xl text-sm font-medium hover:bg-secondary/80 transition-all"
+            >
+              <span className="flex items-center gap-2">
+                {menuItems.find(item => item.id === activeTab)?.icon && 
+                  React.createElement(menuItems.find(item => item.id === activeTab)!.icon, { size: 18 })}
+                {menuItems.find(item => item.id === activeTab)?.name}
+              </span>
+              <ChevronRight size={18} className={`transition-transform ${mobileMenuOpen ? 'rotate-90' : ''}`} />
+            </button>
+          </div>
+
           {activeTab === 'general' && (
             <div className="max-w-4xl mx-auto">
               <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
