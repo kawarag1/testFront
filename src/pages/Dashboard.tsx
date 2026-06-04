@@ -110,7 +110,7 @@ const Dashboard = () => {
       }
 
       try {
-        const response = await fetch(apiUrl(`/v1/guilds/${encodeURIComponent(String(id))}/welcome-message`), {
+        const response = await fetch(apiUrl(`/api/v1/guilds/${encodeURIComponent(String(id))}/welcome-message`), {
           method: 'GET',
           credentials: 'include',
           headers: getAuthHeaders(),
@@ -164,7 +164,7 @@ const Dashboard = () => {
 
     setSaving(true);
     try {
-      const res = await fetch(apiUrl(`/v1/guilds/${encodeURIComponent(String(id))}/welcome-message`), {
+      const res = await fetch(apiUrl(`/api/v1/guilds/${encodeURIComponent(String(id))}/welcome-message`), {
         method: 'PUT',
         credentials: 'include',
         headers: {
