@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useI18n } from '../i18n';
 
+const discordInviteUrl = 'https://discord.com/oauth2/authorize?client_id=1403029892387569766';
+
 const Home = () => {
   const { t } = useI18n();
   const location = useLocation();
@@ -55,7 +57,7 @@ const Home = () => {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a
-                  href="https://discord.com/oauth2/authorize?client_id=1403029892387569766"
+                  href={discordInviteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-4 rounded-full text-lg font-bold hover:scale-105 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 inline-block text-center">

@@ -161,7 +161,6 @@ export async function logoutSession(): Promise<void> {
     credentials: 'include',
     headers: getAuthHeaders(),
   }).catch(() => {
-    // Ignore network errors here; the caller will handle UI state.
   });
 
   clearCachedSessionUser();

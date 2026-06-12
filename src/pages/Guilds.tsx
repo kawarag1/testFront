@@ -46,18 +46,10 @@ function guildIconUrl(guild: Guild): string | null {
   return guild.icon_url || null;
 }
 
-function buildBotInviteUrl(guildId: string): string {
-  const params = new URLSearchParams({
-    client_id: '1403029892387569766',
-    redirect_uri: `${window.location.origin}/callback`,
-    response_type: 'code',
-    scope: 'bot',
-    permissions: '8',
-    guild_id: guildId,
-    state: guildId,
-  });
+const discordInviteUrl = 'https://discord.com/oauth2/authorize?client_id=1403029892387569766';
 
-  return `https://discord.com/oauth2/authorize?${params.toString()}`;
+function buildBotInviteUrl(guildId: string): string {
+  return `${discordInviteUrl}&guild_id=${encodeURIComponent(guildId)}&state=${encodeURIComponent(guildId)}`;
 }
 
 function pluralizeMembers(count: number | undefined, singular: string, plural2: string, plural5: string): string {
