@@ -46,10 +46,14 @@ function guildIconUrl(guild: Guild): string | null {
   return guild.icon_url || null;
 }
 
-const discordInviteUrl = 'https://discord.com/oauth2/authorize?client_id=1403029892387569766';
-
 function buildBotInviteUrl(guildId: string): string {
-  return `${discordInviteUrl}&guild_id=${encodeURIComponent(guildId)}&state=${encodeURIComponent(guildId)}`;
+  const clientId = '1403029892387569766';
+  const redirect = encodeURIComponent(`${window.location.origin}/callback`);
+  const scope = encodeURIComponent('bot applications.commands identify');
+  const base = `https://discord.com/oauth2/authorize?client_id=${clientId}`;
+
+
+  return `${base}&guild_id=${encodeURIComponent(guildId)}&state=${encodeURIComponent(guildId)}&response_type=code&scope=${scope}&redirect_uri=${redirect}&permissions=8`;
 }
 
 function pluralizeMembers(count: number | undefined, singular: string, plural2: string, plural5: string): string {
