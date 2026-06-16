@@ -58,7 +58,7 @@ function parseWelcomeMessage(payload: unknown): string {
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('general');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [welcomeText, setWelcomeText] = useState('');
+  const [welcomeText, setWelcomeText] = useState('мы приветствуем тебя, {user}, ты пришёл на {server}');
   const { guildId } = useParams();
   const location = useLocation();
   const { t } = useI18n();
@@ -105,7 +105,7 @@ const Dashboard = () => {
       const id = guildId || selectedGuild?.id;
 
       if (!id) {
-        setWelcomeText('');
+        setWelcomeText('мы приветствуем тебя, {user}, ты пришёл на {server}');
         return;
       }
 
@@ -121,7 +121,12 @@ const Dashboard = () => {
         }
 
         const payload = (await response.json()) as unknown;
-        const nextWelcomeText = parseWelcomeMessage(payload);
+        let nextWelcomeText = parseWelcomeMessage(payload);
+
+        // Use snippet as default if no message is set on the server
+        if (!nextWelcomeText) {
+          nextWelcomeText = 'мы приветствуем тебя, {user}, ты пришёл на {server}';
+        }
 
         if (!cancelled) {
           setWelcomeText(nextWelcomeText);

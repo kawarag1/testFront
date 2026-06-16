@@ -39,8 +39,6 @@ const Footer = () => {
             <h4 className="font-bold mb-6">{t.footer.product}</h4>
             <ul className="space-y-4 text-muted-foreground">
               <li><a href="/#features" onClick={handleFeaturesClick} className="hover:text-primary transition-colors">{t.footer.features}</a></li>
-              <li><Link to="/commands" className="hover:text-primary transition-colors">{t.footer.commands}</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t.footer.premium}</a></li>
             </ul>
           </div>
 
@@ -48,8 +46,6 @@ const Footer = () => {
             <h4 className="font-bold mb-6">{t.footer.support}</h4>
             <ul className="space-y-4 text-muted-foreground">
               <li><Link to="/commands" className="hover:text-primary transition-colors">{t.footer.documentation}</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t.footer.discordServer}</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">{t.footer.contactUs}</a></li>
             </ul>
           </div>
         </div>
