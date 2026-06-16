@@ -285,7 +285,7 @@ const dictionaries: Record<Language, Dictionary> = {
       links: 'Links',
       invites: 'Invites',
       welcomeMessage: 'Welcome Message',
-      welcomePlaceholder: 'We welcome you, {user}, you have come to {server}!',
+      welcomePlaceholder: 'We welcome you, {user}, you have come to {server}',
       farewellMessage: 'Farewell Message',
       farewellPlaceholder: 'Goodbye, {user}. We hope to see you again!',
       selectOtherServer: 'Select another server',
