@@ -7,7 +7,6 @@ const NotFound: React.FC = () => {
   return (
     <section className="relative flex py-10 min-h-screen items-center justify-center overflow-hidden bg-black">
       <div className="mx-auto relative z-30 w-full max-w-[600px] text-center px-4">
-        {/* Large 404 Text */}
         <div className="mb-8">
           <svg
             width="472"
@@ -126,7 +125,6 @@ const NotFound: React.FC = () => {
           {t.notFound.backHome}
         </a>
 
-        {/* Footer */}
         <div className="mt-16">
           <p className="text-sm text-gray-600">
             © {new Date().getFullYear()} Helper Bot

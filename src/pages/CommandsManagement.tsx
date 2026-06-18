@@ -177,7 +177,6 @@ const CommandsManagement: React.FC<CommandsManagementProps> = ({ guildId, guildN
         await enableCommand(command);
       }
 
-      // Update local state
       setCommands(commands.map(c =>
         c.id === command.id ? { ...c, enabled: !c.enabled } : c
       ));

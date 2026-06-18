@@ -244,7 +244,6 @@ const Dashboard = () => {
           </div>
         </aside>
 
-        {/* Mobile Menu Toggle */}
         <motion.div 
           className="lg:hidden fixed top-24 left-6 right-6 z-40 bg-secondary/95 backdrop-blur-md rounded-xl border border-border shadow-lg"
           initial={{ opacity: 0, y: -10 }}
@@ -269,7 +268,6 @@ const Dashboard = () => {
         </motion.div>
 
         <main className="flex-1 p-6 md:p-12 overflow-y-auto">
-          {/* Mobile Section Selector */}
           <div className="lg:hidden mb-6">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

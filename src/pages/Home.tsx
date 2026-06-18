@@ -37,7 +37,6 @@ const Home = () => {
       <Navbar />
       
       <main>
-        {/* Hero Section */}
         <section className="relative pt-32 pb-20 overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-20">
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary rounded-full blur-[120px]" />
@@ -74,7 +73,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Features Grid */}
         <section id="features" className="py-24 max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
             <h2 className="text-4xl font-bold font-serif mb-4">{t.home.featuresTitle}</h2>

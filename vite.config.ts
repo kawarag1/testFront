@@ -7,9 +7,9 @@ export default defineConfig({
     exclude: ['react/jsx-dev-runtime'],
   },
   server: {
-    host: true,  // Разрешить доступ с любых сетевых интерфейсов
-    port: 5173,   // Явно указываем порт
-    strictPort: true, // Не использовать другой порт, если 5173 занят
+    host: true,  
+    port: 5173,   
+    strictPort: true, 
     watch: {
       ignored: ['**/Dockerfile', '**/*.yml', '**/.git/**', '**/node_modules/**'],
     },
@@ -23,8 +23,7 @@ export default defineConfig({
       'helper.nelocal.host',
       'localhost',
       '127.0.0.1',
-      '.nelocal.host',  // Разрешить все поддомены .nelocal.host
-      // Добавьте сюда другие домены, если нужно
+      '.nelocal.host',
     ],
   },
   esbuild: {
@@ -36,7 +35,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       onwarn(warning, warn) {
-        // ignore certain harmless warnings
         if (
           warning.message.includes('Module level directives') ||
           warning.message.includes('"use client"')  ||
@@ -45,17 +43,14 @@ export default defineConfig({
           return; 
         }
 
-        // FAIL build on unresolved imports
         if (warning.code === 'UNRESOLVED_IMPORT') {
           throw new Error(`Build failed due to unresolved import:\n${warning.message}`);
         }
 
-        // FAIL build on missing exports (like your Input error)
         if (warning.code === 'PLUGIN_WARNING' && /is not exported/.test(warning.message)) {
           throw new Error(`Build failed due to missing export:\n${warning.message}`);
         }
 
-        // other warnings: log normally
         warn(warning);
       },
     },

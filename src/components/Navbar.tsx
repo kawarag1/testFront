@@ -114,7 +114,6 @@ const Navbar = () => {
           <span className="text-xl font-bold tracking-tight font-serif">Helper</span>
         </Link>
 
-        {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
@@ -152,7 +151,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Toggle */}
         <div className="md:hidden flex items-center gap-2">
           <button
             onClick={() => setLanguage(language === 'en' ? 'ru' : 'en')}
@@ -167,7 +165,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div

@@ -37,7 +37,6 @@ const Commands = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
         <div className="relative mb-12">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
           <input
@@ -49,7 +48,6 @@ const Commands = () => {
           />
         </div>
 
-        {/* Commands List */}
         <div className="space-y-4">
           {filteredCommands.map((cmd) => (
             <div key={cmd.id} className="border border-border rounded-2xl overflow-hidden bg-card">
